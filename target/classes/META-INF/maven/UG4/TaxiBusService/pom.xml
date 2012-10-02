@@ -3,4 +3,11 @@
   <groupId>UG4</groupId>
   <artifactId>TaxiBusService</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <dependencies>
+  	<dependency>
+  		<groupId>net.sf.jgrapht</groupId>
+  		<artifactId>jgrapht</artifactId>
+  		<version>0.8.3</version>
+  	</dependency>
+  </dependencies>
 </project>
