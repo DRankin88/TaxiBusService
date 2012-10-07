@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import database.AllPairsShortestPath;
+
 public class VogellaMain {
 
 	  private static List<Vertex> nodes;
@@ -31,16 +33,17 @@ public class VogellaMain {
 
 		    // Lets check from location Loc_1 to Loc_10
 		    Graph graph = new Graph(nodes, edges);
-		    DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
-		    dijkstra.execute(nodes.get(2));
-		    LinkedList<Vertex> path = dijkstra.getPath(nodes.get(4));
+		    AllPairsShortestPath allPairsShortestPath = new AllPairsShortestPath(graph);
+//		    DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
+//		    dijkstra.execute(nodes.get(0));
+//		    LinkedList<Vertex> path = dijkstra.getPath(nodes.get(2));
 		    
 
 		    
-		    for (Vertex vertex : path) {
-		      System.out.println(vertex);
-		    }
-		    
+	//	    for (Vertex vertex : path) {
+	//	      System.out.println(vertex);
+	//	    }
+	//	    
 	
 	}
 	
