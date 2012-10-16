@@ -1,17 +1,17 @@
-package passangers;
+package passengers;
 
 /**
- * Object representing a passanger on the bus
+ * Object representing a passenger on the bus
  * @author David Rankin
  *
  */
-public class Passanger {
+public class Passenger {
 
 	private String name;
 	private String destinationStop;
 	private int totalTimeOnBus;
 	
-	public Passanger (String name, String destinationStop){
+	public Passenger (String name, String destinationStop){
 		
 		this.name = name;
 		this.destinationStop = destinationStop;
