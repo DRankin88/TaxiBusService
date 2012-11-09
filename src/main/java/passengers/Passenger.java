@@ -1,5 +1,7 @@
 package passengers;
 
+import vogella.Vertex;
+
 /**
  * Object representing a passenger on the bus
  * @author David Rankin
@@ -8,13 +10,44 @@ package passengers;
 public class Passenger {
 
 	private String name;
-	private String destinationStop;
+	private Vertex startingStop;
+	private Vertex destinationStop;
 	private int totalTimeOnBus;
 	
-	public Passenger (String name, String destinationStop){
+	
+	
+	public String getName() {
+		return name;
+	}
+
+
+
+	public Vertex getStartingStop() {
+		return startingStop;
+	}
+
+
+
+	public Vertex getDestinationStop() {
+		return destinationStop;
+	}
+
+
+
+	public int getTotalTimeOnBus() {
+		return totalTimeOnBus;
+	}
+
+
+
+	public Passenger (String name, Vertex startingStop, Vertex destinationStop){
 		
 		this.name = name;
 		this.destinationStop = destinationStop;
+		this.startingStop = startingStop;
 		
 	}
+	
+	
+	
 }

@@ -3,6 +3,7 @@ package controller;
 import java.util.ArrayList;
 
 import passengers.Passenger;
+import vogella.Vertex;
 
 /**
  * Models a controller back at HQ that holds information about the world as we move through time.
@@ -27,6 +28,27 @@ public class BusCentralDatabase {
 	public static void addPassengerToWorld(Passenger passenger){
 		
 		passengersAtStops.add(passenger);
+		
+	}
+	
+	/**
+	 * Used by buses to find out the passengers at their stop
+	 * @param currentStop Stop the bus is at
+	 * @return the ArrayList of passengers that are at the currentStop
+	 */
+	public static ArrayList<Passenger> getPassengersAtMyStop(Vertex currentStop){
+		
+		ArrayList<Passenger> passengersAtYourStop = new ArrayList<Passenger>();
+		
+		for (int i = 0; i < passengersAtStops.size(); i++){
+			
+			if (passengersAtStops.get(i).getStartingStop().equals(currentStop))
+				
+				passengersAtYourStop.add(passengersAtStops.get(i));
+			
+		}
+		
+		return passengersAtYourStop;
 		
 	}
 

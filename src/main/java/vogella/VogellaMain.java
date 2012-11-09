@@ -20,8 +20,9 @@ public class VogellaMain {
 		Parser parser = new Parser(args[0]);
 		Graph busGraph = parser.parseFile();
 		AllPairsShortestPath allPairsShortestPath = new AllPairsShortestPath(busGraph);
-		LinkedList<Vertex> path = allPairsShortestPath.getPath("A", "D");
-
+		
+		
+		
 	}
 
 }
