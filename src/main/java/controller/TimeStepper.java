@@ -1,49 +1,67 @@
 package controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
+import passengers.Passenger;
+import scenarios.InputParser;
+import vogella.Graph;
+import vogella.Vertex;
 import buses.Bus;
 
-import vogella.Graph;
-
 /**
- * Controls the flow of the simulation. It is called on every time step and controls the picking up and dropping off of passengers.
+ * Controls the flow of the simulation. It is called on every time step and generates buses and passengers 
+ * on the time steps that the input file decreed.
  * @author David Rankin
  *
  */
 public class TimeStepper {
 
+
 	private Graph graph;
-	private ArrayList<Bus> buses;
-	
-	public TimeStepper (Graph graph, ArrayList<Bus> buses) {
-		
+	private InputParser scenario;
+	private int time = 0;
+
+	public TimeStepper (Graph graph, InputParser scenario) {
+
 		this.graph = graph;
-		this.buses = buses;
-		
+		this.scenario = scenario;
+
 	}
-	
+
 	/**
 	 * Steps through time.
 	 */
 	public void step(){
+
 		
-		busesDealWithPassengers();
-	}
-	
-	/**
-	 * Loops over all buses in the graph and tells them to deal with their passengers.
-	 */
-	private void busesDealWithPassengers(){
-		
-		for (int i = 0; i < buses.size(); i++){
-			
-			//TODO Call each bus objects pickupPassengers method
-			buses.get(i);
+
+		ArrayList<String[]> newPassengersToCreate = scenario.getPassengers(time);
+		ArrayList<String[]> newBusesToCreate = scenario.getBuses(time);
+
+		for (int i = 0; i < newPassengersToCreate.size(); i++){
+
+			String name = newPassengersToCreate.get(i)[2];
+			Vertex startingStop = graph.getVertex(newPassengersToCreate.get(i)[3]);
+			Vertex finishingStop = graph.getVertex(newPassengersToCreate.get(i)[4]);
+
+			Passenger passenger = new Passenger(name, startingStop, finishingStop);
+			BusCentralDatabase.addPassengerToWorld(passenger);
+
+		}
+
+		for (int i = 0; i < newBusesToCreate.size(); i++){
+
+			String name = newBusesToCreate.get(i)[2];
+			int capacity = Integer.parseInt(newBusesToCreate.get(i)[3]);
+			Vertex startingStop = graph.getVertex(newBusesToCreate.get(i)[4]);
+
+			Bus bus = new Bus(name, capacity, startingStop);
+			BusCentralDatabase.addBusesToWorld(bus);
 			
 		}
 		
+		time++;
+		
 	}
-	
+
 }

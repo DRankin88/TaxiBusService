@@ -19,6 +19,24 @@ public class Graph {
 	    return edges;
 	  }
 	  
+	  public Vertex getVertex(String vertexName){
+		  
+		  Vertex vertex = null;
+		  
+		  for (int i = 0; i < vertexes.size(); i++){
+			  
+			  if (vertexes.get(i).getName().equals(vertexName)){
+				  
+				  vertex = vertexes.get(i);
+				  
+			  }
+			  
+		  }
+		  
+		  return vertex;
+		  
+	  }
+	  
 	  
 	  
 	} 

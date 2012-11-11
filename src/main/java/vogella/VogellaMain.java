@@ -1,13 +1,10 @@
 package vogella;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
-import sun.awt.image.ImageWatched.Link;
+import scenarios.InputParser;
 import utilities.Parser;
-
+import controller.TimeStepper;
 import database.AllPairsShortestPath;
 
 public class VogellaMain {
@@ -17,11 +14,15 @@ public class VogellaMain {
 
 	public static void main(String[] args) throws Exception {
 
-		Parser parser = new Parser(args[0]);
-		Graph busGraph = parser.parseFile();
+		Parser graphParser = new Parser(args[0]);
+		Graph busGraph = graphParser.parseFile();
 		AllPairsShortestPath allPairsShortestPath = new AllPairsShortestPath(busGraph);
 		
-		
+		InputParser scenario = new InputParser(args[1]);
+		TimeStepper timeStepper = new TimeStepper(busGraph,scenario);
+		while (true){
+			timeStepper.step();
+		}
 		
 	}
 

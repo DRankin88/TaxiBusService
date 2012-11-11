@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import passengers.Passenger;
 import vogella.Vertex;
+import buses.Bus;
 
 /**
  * Models a controller back at HQ that holds information about the world as we move through time.
@@ -15,8 +16,8 @@ public class BusCentralDatabase {
 	// This is a "static" class and so is non-instantiable
 	private BusCentralDatabase(){};
 	
-	private static ArrayList<Passenger> passengersAtStops;
-	
+	private static ArrayList<Passenger> passengersAtStops = new ArrayList<Passenger>();
+	private static ArrayList<Bus> busesInTheWorld = new ArrayList<Bus>();
 	public static ArrayList<Passenger> getPassengersAtStops() {
 		return passengersAtStops;
 	}
@@ -28,6 +29,12 @@ public class BusCentralDatabase {
 	public static void addPassengerToWorld(Passenger passenger){
 		
 		passengersAtStops.add(passenger);
+		
+	}
+	
+	public static void addBusesToWorld(Bus bus){
+		
+		busesInTheWorld.add(bus);
 		
 	}
 	

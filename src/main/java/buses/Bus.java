@@ -17,12 +17,14 @@ public class Bus {
 
 	private String name;
 	private int capacity;
-	private HashMap passangers = new HashMap<String, Passenger>();
+	private HashMap<String, Passenger> passengers = new HashMap<String, Passenger>();
 	private Vertex currentStop;
 
-	public Bus(String name) {
+	public Bus(String name, int capacity, Vertex currentStop) {
 
 		this.name = name;
+		this.capacity = capacity;
+		this.currentStop = currentStop;
 
 	}
 
@@ -32,7 +34,7 @@ public class Bus {
 	 */
 	public void pickupPassengers(){
 
-		ArrayList<Passenger> passengersAtMyStop = BusCentralDatabase.getPassengersAtMyStop(currentStop);
+//		ArrayList<Passenger> passengersAtMyStop = BusCentralDatabase.getPassengersAtMyStop(currentStop);
 
 	}
 
