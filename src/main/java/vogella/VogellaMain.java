@@ -2,6 +2,8 @@ package vogella;
 
 import java.util.List;
 
+import algorithms.FirstComeFirstServed;
+
 import scenarios.InputParser;
 import utilities.Parser;
 import controller.TimeStepper;
@@ -20,9 +22,8 @@ public class VogellaMain {
 		
 		InputParser scenario = new InputParser(args[1]);
 		TimeStepper timeStepper = new TimeStepper(busGraph,scenario);
-		while (true){
-			timeStepper.step();
-		}
+
+		FirstComeFirstServed.doAlgorithm();
 		
 	}
 

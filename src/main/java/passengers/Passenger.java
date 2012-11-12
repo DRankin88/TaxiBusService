@@ -13,6 +13,7 @@ public class Passenger {
 	private Vertex startingStop;
 	private Vertex destinationStop;
 	private int totalTimeOnBus;
+	private boolean droppedOff;
 	
 	
 	
@@ -40,11 +41,18 @@ public class Passenger {
 
 
 
+	public void setDroppedOff(boolean droppedOff) {
+		this.droppedOff = droppedOff;
+	}
+
+
+
 	public Passenger (String name, Vertex startingStop, Vertex destinationStop){
 		
 		this.name = name;
 		this.destinationStop = destinationStop;
 		this.startingStop = startingStop;
+		this.droppedOff = false;
 		
 	}
 	

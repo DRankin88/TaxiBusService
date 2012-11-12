@@ -17,9 +17,9 @@ import buses.Bus;
 public class TimeStepper {
 
 
-	private Graph graph;
-	private InputParser scenario;
-	private int time = 0;
+	private static Graph graph;
+	private static InputParser scenario;
+	private static int time = 0;
 
 	public TimeStepper (Graph graph, InputParser scenario) {
 
@@ -31,7 +31,7 @@ public class TimeStepper {
 	/**
 	 * Steps through time.
 	 */
-	public void step(){
+	public static void step(){
 
 		
 

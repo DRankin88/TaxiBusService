@@ -16,19 +16,27 @@ public class BusCentralDatabase {
 	// This is a "static" class and so is non-instantiable
 	private BusCentralDatabase(){};
 	
-	private static ArrayList<Passenger> passengersAtStops = new ArrayList<Passenger>();
+	private static ArrayList<Passenger> passengersInTheWorld = new ArrayList<Passenger>();
 	private static ArrayList<Bus> busesInTheWorld = new ArrayList<Bus>();
-	public static ArrayList<Passenger> getPassengersAtStops() {
-		return passengersAtStops;
+	public static ArrayList<Passenger> getPassengerInTheWorld() {
+		return passengersInTheWorld;
 	}
 	
+	
+	
+	public static ArrayList<Bus> getBusesInTheWorld() {
+		return busesInTheWorld;
+	}
+
+
+
 	/**
 	 * Adds a passenger to the world. Should be called whenever a new passenger is created
 	 * @param passenger
 	 */
 	public static void addPassengerToWorld(Passenger passenger){
 		
-		passengersAtStops.add(passenger);
+		passengersInTheWorld.add(passenger);
 		
 	}
 	
@@ -47,11 +55,11 @@ public class BusCentralDatabase {
 		
 		ArrayList<Passenger> passengersAtYourStop = new ArrayList<Passenger>();
 		
-		for (int i = 0; i < passengersAtStops.size(); i++){
+		for (int i = 0; i < passengersInTheWorld.size(); i++){
 			
-			if (passengersAtStops.get(i).getStartingStop().equals(currentStop))
+			if (passengersInTheWorld.get(i).getStartingStop().equals(currentStop))
 				
-				passengersAtYourStop.add(passengersAtStops.get(i));
+				passengersAtYourStop.add(passengersInTheWorld.get(i));
 			
 		}
 		
