@@ -2,7 +2,7 @@ package vogella;
 
 import java.util.List;
 
-import algorithms.FirstComeFirstServed;
+import algorithms.AssignClosestBus;
 
 import scenarios.InputParser;
 import utilities.Parser;
@@ -23,7 +23,7 @@ public class VogellaMain {
 		InputParser scenario = new InputParser(args[1]);
 		TimeStepper timeStepper = new TimeStepper(busGraph,scenario);
 
-		FirstComeFirstServed.doAlgorithm();
+		AssignClosestBus.doAlgorithm();
 		
 	}
 

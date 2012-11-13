@@ -55,7 +55,7 @@ public class TimeStepper {
 			int capacity = Integer.parseInt(newBusesToCreate.get(i)[3]);
 			Vertex startingStop = graph.getVertex(newBusesToCreate.get(i)[4]);
 
-			Bus bus = new Bus(name, capacity, startingStop);
+			Bus bus = new Bus(name, capacity, startingStop, graph);
 			BusCentralDatabase.addBusesToWorld(bus);
 			
 		}

@@ -19,7 +19,7 @@ import vogella.Vertex;
  */
 public class AllPairsShortestPath {
 
-	HashMap allPaths = new HashMap<String, HashMap>();
+	static HashMap allPaths = new HashMap<String, HashMap>();
 
 	public AllPairsShortestPath(Graph graph){
 
@@ -50,7 +50,7 @@ public class AllPairsShortestPath {
 		return allPaths;
 	}
 	
-	public LinkedList<Vertex> getPath(String startVertex, String finalVertex){
+	public static LinkedList<Vertex> getPath(String startVertex, String finalVertex){
 		
 		HashMap temp = (HashMap) allPaths.get(startVertex);
 		return (LinkedList<Vertex>) temp.get(finalVertex);
