@@ -3,6 +3,8 @@ package buses;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import com.sun.org.apache.bcel.internal.generic.CPInstruction;
+
 import passengers.Passenger;
 import vogella.Graph;
 import vogella.Vertex;
@@ -21,6 +23,8 @@ public class Bus {
 	private Vertex currentStop;
 	private Vertex targetStop;
 	private Graph graph;
+	private LinkedList<Vertex> path;
+	private int costToNextStop;
 
 	public Bus(String name, int capacity, Vertex currentStop, Graph graph) {
 
@@ -28,17 +32,21 @@ public class Bus {
 		this.capacity = capacity;
 		this.currentStop = currentStop;
 		this.graph = graph;
+		this.path= new LinkedList<Vertex>();
 
 	}
-	
+
 	public Vertex getTargetStop() {
 		return targetStop;
 	}
 
 	public void setTargetStop(Vertex targetStop) {
 		this.targetStop = targetStop;
+
+		this.path = AllPairsShortestPath.getPath(currentStop.getName(), targetStop.getName());
+
 	}
-	
+
 	public Vertex getCurrentStop() {
 		return currentStop;
 	}
@@ -52,22 +60,22 @@ public class Bus {
 	 * @return
 	 */
 	public ArrayList<Passenger> getPassengersWantThisStop(){
-		
+
 		ArrayList<Passenger> passengers = new ArrayList<Passenger>();
-		
+
 		for (int i = 0; i < passengersOnBus.size(); i++){
-			
+
 			Passenger passenger = passengersOnBus.get(i);
 			if (passenger.getDestinationStop().equals(currentStop)){
-				
+
 				passengers.add(passenger);
-				
+
 			}
-			
+
 		}
-		
+
 		return passengers;
-		
+
 	}
 
 	/**
@@ -76,32 +84,73 @@ public class Bus {
 	 */
 	public void pickupPassengers(){
 
-//		ArrayList<Passenger> passengersAtMyStop = BusCentralDatabase.getPassengersAtMyStop(currentStop);
+		//		ArrayList<Passenger> passengersAtMyStop = BusCentralDatabase.getPassengersAtMyStop(currentStop);
 
 	}
-	
+
 	/**
 	 * Works out the distance in terms of cost between this bus and a targeted Vertex.
 	 * @param targetStop
 	 * @return
 	 */
 	public int distance(Vertex targetStop){
-		//TODO
-		
+
+
 		int cost = 0;
-		
+
 		LinkedList<Vertex> pathToTarget = AllPairsShortestPath.getPath(currentStop.getName(), targetStop.getName());
-		
+
 		for (int i = 0; i < pathToTarget.size(); i++){
-			
+
 			Vertex A = pathToTarget.get(i);
 			Vertex B = pathToTarget.get(i+1);
-			
+
 			cost += graph.getEdgeBetweenVertices(A, B).getWeight();
-			
+
 		}
-		
+
 		return cost;
-		
+
 	}
+
+	/**
+	 * Moves the bus along its path the equivalent of one time step
+	 */
+	public void moveAlongPath(){
+
+//TODO run debugger and pick this up
+		if (costToNextStop != 0){
+			// We must be traversing an edge between stops
+
+			costToNextStop = costToNextStop - 1;
+
+			if (costToNextStop == 0){
+				//We have reached next stop	
+				currentStop = targetStop;
+				path.remove(0);
+				targetStop = path.get(0);	
+
+			}
+		}
+
+		// We are at a stop
+		else if (graph.getVertexes().contains(currentStop)) {
+
+			if(!path.isEmpty()){
+
+
+				currentStop = path.get(0);
+				targetStop = path.get(1);
+
+				costToNextStop = graph.getEdgeBetweenVertices(currentStop, targetStop).getWeight();
+				costToNextStop = costToNextStop - 1;
+				
+
+			}
+		}
+
+	}
+
+
+
 }

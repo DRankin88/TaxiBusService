@@ -19,7 +19,7 @@ public class TimeStepper {
 
 	private static Graph graph;
 	private static InputParser scenario;
-	private static int time = 0;
+	private static int time = 1;
 
 	public TimeStepper (Graph graph, InputParser scenario) {
 
@@ -46,6 +46,7 @@ public class TimeStepper {
 
 			Passenger passenger = new Passenger(name, startingStop, finishingStop);
 			BusCentralDatabase.addPassengerToWorld(passenger);
+			BusCentralDatabase.addPassengerToUnallocated(passenger);
 
 		}
 
@@ -57,7 +58,7 @@ public class TimeStepper {
 
 			Bus bus = new Bus(name, capacity, startingStop, graph);
 			BusCentralDatabase.addBusesToWorld(bus);
-			
+			BusCentralDatabase.addBusToFreeBuses(bus);
 		}
 		
 		time++;

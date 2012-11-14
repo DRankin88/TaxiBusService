@@ -22,6 +22,17 @@ public class BusCentralDatabase {
 	private static ArrayList<Bus> freeBuses = new ArrayList<Bus>();
 
 
+	public static void addPassengerToUnallocated(Passenger passenger){
+
+		unallocatedPassengers.add(passenger);
+
+	}
+	
+	public static void addBusToFreeBuses(Bus bus){
+		
+		freeBuses.add(bus);
+		
+	}
 
 	public static ArrayList<Bus> getFreeBuses() {
 		return freeBuses;
@@ -98,6 +109,12 @@ public class BusCentralDatabase {
 
 	}
 
+	public static void removeBusFromUnassigned(Bus bus){
+
+		freeBuses.remove(bus);
+
+	}
+
 	/**
 	 * If given a passenger this method returns the bus closest to them that is Unallocated
 	 * @return
@@ -106,10 +123,11 @@ public class BusCentralDatabase {
 
 		ArrayList<Bus> myFreeBuses = freeBuses;
 
-		Bus closestBus = null;
+	
 
 		Bus firstBus = myFreeBuses.get(0);
-
+		
+		Bus closestBus = firstBus;
 		for (int i = 1; i < myFreeBuses.size(); i++){
 
 			Bus bus = myFreeBuses.get(i);
@@ -117,12 +135,6 @@ public class BusCentralDatabase {
 			if (firstBus.distance(passenger.getStartingStop()) > bus.distance(passenger.getStartingStop())){
 
 				closestBus = bus;
-
-			}
-
-			else{
-
-				closestBus = firstBus;
 
 			}
 		}

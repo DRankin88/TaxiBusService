@@ -19,12 +19,13 @@ public class VogellaMain {
 		Parser graphParser = new Parser(args[0]);
 		Graph busGraph = graphParser.parseFile();
 		AllPairsShortestPath allPairsShortestPath = new AllPairsShortestPath(busGraph);
-		
+
 		InputParser scenario = new InputParser(args[1]);
 		TimeStepper timeStepper = new TimeStepper(busGraph,scenario);
 
-		AssignClosestBus.doAlgorithm();
-		
+		while (true){
+			AssignClosestBus.doAlgorithm();
+		}
 	}
 
 }
