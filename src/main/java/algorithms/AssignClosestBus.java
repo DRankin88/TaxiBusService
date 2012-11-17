@@ -43,7 +43,6 @@ public class AssignClosestBus {
 		for (int i = 0; i < allBuses.size(); i++) {
 			
 			Bus bus = allBuses.get(i);
-			Vertex currentStop = bus.getCurrentStop();
 			ArrayList<Passenger> busesDropOffs = bus.getPassengersWantThisStop();
 			
 			for (int l = 0; l < busesDropOffs.size(); l++){

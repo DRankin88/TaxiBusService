@@ -118,7 +118,6 @@ public class Bus {
 	 */
 	public void moveAlongPath(){
 
-//TODO run debugger and pick this up
 		if (costToNextStop != 0){
 			// We must be traversing an edge between stops
 
@@ -126,9 +125,8 @@ public class Bus {
 
 			if (costToNextStop == 0){
 				//We have reached next stop	
-				currentStop = targetStop;
-				path.remove(0);
-				targetStop = path.get(0);	
+				currentStop = path.get(1);
+				path.remove(0);	
 
 			}
 		}
@@ -136,17 +134,25 @@ public class Bus {
 		// We are at a stop
 		else if (graph.getVertexes().contains(currentStop)) {
 
+			
 			if(!path.isEmpty()){
 
 
 				currentStop = path.get(0);
-				targetStop = path.get(1);
+				Vertex nextStop = path.get(1);
 
-				costToNextStop = graph.getEdgeBetweenVertices(currentStop, targetStop).getWeight();
+				costToNextStop = graph.getEdgeBetweenVertices(currentStop, nextStop).getWeight();
 				costToNextStop = costToNextStop - 1;
-				
+
 
 			}
+		}
+
+		// We reached the final stop in our path
+		if (path.size() == 1){
+
+			path.clear();
+
 		}
 
 	}

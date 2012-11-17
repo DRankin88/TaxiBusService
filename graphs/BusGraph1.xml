@@ -72,6 +72,6 @@
 	<id>8</id>
 	<source>2</source>
 	<destination>3</destination>
-	<weight>1</weight>
+	<weight>2</weight>
 	</edge>
 </graph>
