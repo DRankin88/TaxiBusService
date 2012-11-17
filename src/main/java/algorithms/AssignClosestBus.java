@@ -19,7 +19,7 @@ public class AssignClosestBus {
 		allocatePassengersToBuses();
 		
 		// TODO Pick up passenger if bus is at destination
-		
+		pickupPassengers();
 		
 		
 		
@@ -84,5 +84,30 @@ public class AssignClosestBus {
 		
 	}
 	
+	//TODO Right now algorithm does not support on route pickups
+	private static void pickupPassengers(){
+		
+		ArrayList<Bus> allBuses = BusCentralDatabase.getBusesInTheWorld();
+		
+		for (int e = 0; e < allBuses.size(); e++){
+			
+			Bus currentBus = allBuses.get(e);
+			
+			if (currentBus.getCurrentStop().equals(currentBus.getTargetStop())){
+				
+				ArrayList<Passenger> passengers = BusCentralDatabase.getPassengersAtMyStop(currentBus.getCurrentStop());
+				
+				for (int y = 0; y < passengers.size(); y++){
+					
+					currentBus.pickupPassenger(passengers.get(y));
+					BusCentralDatabase.removePassengerFromWaiting(passengers.get(y));
+					
+				}
+				
+			}
+			
+		}
+		
+	}
 	
 }

@@ -78,13 +78,10 @@ public class Bus {
 
 	}
 
-	/**
-	 * Instructs this bus to pickup any passengers at the current stop. Who and what is picked up will depend on the 
-	 * algorithm that we are currently using.
-	 */
-	public void pickupPassengers(){
+	
+	public void pickupPassenger(Passenger passenger){
 
-		//		ArrayList<Passenger> passengersAtMyStop = BusCentralDatabase.getPassengersAtMyStop(currentStop);
+		passengersOnBus.add(passenger);
 
 	}
 

@@ -47,6 +47,7 @@ public class TimeStepper {
 			Passenger passenger = new Passenger(name, startingStop, finishingStop);
 			BusCentralDatabase.addPassengerToWorld(passenger);
 			BusCentralDatabase.addPassengerToUnallocated(passenger);
+			BusCentralDatabase.addPassengerToWaiting(passenger);
 
 		}
 

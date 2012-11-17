@@ -18,10 +18,22 @@ public class BusCentralDatabase {
 
 	private static ArrayList<Passenger> passengersInTheWorld = new ArrayList<Passenger>();
 	private static ArrayList<Passenger> unallocatedPassengers = new ArrayList<Passenger>();
+	private static ArrayList<Passenger> passengersWaiting = new ArrayList<Passenger>();
 	private static ArrayList<Bus> busesInTheWorld = new ArrayList<Bus>();
 	private static ArrayList<Bus> freeBuses = new ArrayList<Bus>();
 
-
+	public static void addPassengerToWaiting(Passenger passenger){
+		
+		passengersWaiting.add(passenger);
+		
+	}
+	
+	public static void removePassengerFromWaiting(Passenger passenger){
+		
+		passengersWaiting.remove(passenger);
+		
+	}
+	
 	public static void addPassengerToUnallocated(Passenger passenger){
 
 		unallocatedPassengers.add(passenger);
