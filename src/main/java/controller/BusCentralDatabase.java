@@ -34,6 +34,12 @@ public class BusCentralDatabase {
 		
 	}
 	
+	public static void removePassengerFromUnallocated(Passenger passenger){
+		
+		unallocatedPassengers.remove(passenger);
+		
+	}
+	
 	public static void addPassengerToUnallocated(Passenger passenger){
 
 		unallocatedPassengers.add(passenger);

@@ -50,6 +50,7 @@ public class AssignClosestBus {
 				busesDropOffs.get(l).setDroppedOff(true);
 				int remove = BusCentralDatabase.getPassengerInTheWorld().indexOf(busesDropOffs.get(l));
 				BusCentralDatabase.getPassengerInTheWorld().remove(remove);
+				bus.removePassenger(busesDropOffs.get(l));
 				
 			}	
 		}
@@ -87,6 +88,12 @@ public class AssignClosestBus {
 	//TODO Right now algorithm does not support on route pickups
 	private static void pickupPassengers(){
 		
+		if (BusCentralDatabase.getPassengerInTheWorld().isEmpty()){
+			
+			return;
+			
+		}
+		
 		ArrayList<Bus> allBuses = BusCentralDatabase.getBusesInTheWorld();
 		
 		for (int e = 0; e < allBuses.size(); e++){
@@ -101,8 +108,12 @@ public class AssignClosestBus {
 					
 					currentBus.pickupPassenger(passengers.get(y));
 					BusCentralDatabase.removePassengerFromWaiting(passengers.get(y));
-					
+					BusCentralDatabase.removePassengerFromUnallocated(passengers.get(y));
 				}
+				
+				// Now the bus must be routed to drop the passenger off
+				ArrayList<Passenger> busPassengers = currentBus.getPassengersOnBus();
+				currentBus.setTargetStop(busPassengers.get(0).getDestinationStop());
 				
 			}
 			

@@ -35,6 +35,10 @@ public class Bus {
 		this.path= new LinkedList<Vertex>();
 
 	}
+	
+	public ArrayList<Passenger> getPassengersOnBus() {
+		return passengersOnBus;
+	}
 
 	public Vertex getTargetStop() {
 		return targetStop;
@@ -53,6 +57,12 @@ public class Bus {
 
 	public void setCurrentStop(Vertex currentStop) {
 		this.currentStop = currentStop;
+	}
+	
+	public void removePassenger(Passenger passenger){
+		
+		passengersOnBus.remove(passenger);
+		
 	}
 
 	/**
