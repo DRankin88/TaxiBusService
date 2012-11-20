@@ -14,9 +14,24 @@ public class Passenger {
 	private Vertex destinationStop;
 	private int totalTimeOnBus;
 	private boolean droppedOff;
+	private boolean pickedUp;
 	
-	
-	
+	public void setTotalTimeOnBus(int totalTimeOnBus) {
+		this.totalTimeOnBus = totalTimeOnBus;
+	}
+
+	public void setPickedUp(boolean pickedUp) {
+		this.pickedUp = pickedUp;
+	}
+
+	public boolean isPickedUp() {
+		return pickedUp;
+	}
+
+	public boolean isDroppedOff() {
+		return droppedOff;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -46,15 +61,17 @@ public class Passenger {
 	}
 
 
-
 	public Passenger (String name, Vertex startingStop, Vertex destinationStop){
 		
 		this.name = name;
 		this.destinationStop = destinationStop;
 		this.startingStop = startingStop;
 		this.droppedOff = false;
+		this.pickedUp = false;
 		
 	}
+	
+	
 	
 	
 	

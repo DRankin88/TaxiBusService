@@ -23,33 +23,33 @@ public class BusCentralDatabase {
 	private static ArrayList<Bus> freeBuses = new ArrayList<Bus>();
 
 	public static void addPassengerToWaiting(Passenger passenger){
-		
+
 		passengersWaiting.add(passenger);
-		
+
 	}
-	
+
 	public static void removePassengerFromWaiting(Passenger passenger){
-		
+
 		passengersWaiting.remove(passenger);
-		
+
 	}
-	
+
 	public static void removePassengerFromUnallocated(Passenger passenger){
-		
+
 		unallocatedPassengers.remove(passenger);
-		
+
 	}
-	
+
 	public static void addPassengerToUnallocated(Passenger passenger){
 
 		unallocatedPassengers.add(passenger);
 
 	}
-	
+
 	public static void addBusToFreeBuses(Bus bus){
-		
+
 		freeBuses.add(bus);
-		
+
 	}
 
 	public static ArrayList<Bus> getFreeBuses() {
@@ -141,10 +141,8 @@ public class BusCentralDatabase {
 
 		ArrayList<Bus> myFreeBuses = freeBuses;
 
-	
-
 		Bus firstBus = myFreeBuses.get(0);
-		
+
 		Bus closestBus = firstBus;
 		for (int i = 1; i < myFreeBuses.size(); i++){
 
@@ -159,5 +157,87 @@ public class BusCentralDatabase {
 
 		return closestBus;
 
+	}
+
+	/**
+	 * Finds the bus that the passenger is riding in
+	 * @param passenger
+	 * @return
+	 */
+	public static Bus getBusFromPassenger(Passenger passenger){
+
+		for (int i = 0; i < busesInTheWorld.size(); i++){
+
+			Bus bus = busesInTheWorld.get(i);
+
+			if (bus.getPassengersOnBus().contains(passenger)){
+
+				return bus;
+
+			}
+
+		}
+
+		return null;
+
+	}
+
+	public static void printStateOfWorld(){
+
+		//Print the location of all buses and who they are assigned to and where they are going
+		for (int i = 0; i < busesInTheWorld.size(); i++){
+
+			Bus bus = busesInTheWorld.get(i);
+			StringBuffer output = new StringBuffer();
+
+
+			if (bus.getCostToNextStop() == 0){
+
+				output.append("Bus named " + bus.getName() + " is currently at stop " + bus.getCurrentStop());
+
+			}
+
+			else {
+
+				output.append("Bus named " + bus.getName() + " is between stops " + bus.getCurrentStop() + " " + bus.getPath().get(1) + " and will get there in " + bus.getCostToNextStop() + " steps");
+
+			}
+
+			if (!bus.getPath().isEmpty()){
+
+				output.append(", is moving along the path " + bus.getPath());
+
+			}
+
+			try{
+
+				output.append(" and is assigned to pick up passenger " + bus.getAssignedPassenger().getName());
+
+			}
+
+			catch(NullPointerException n){}
+
+			System.out.println(output);
+
+		}
+
+		//Print the location of all passengers
+		for (int j = 0; j < passengersInTheWorld.size(); j++){
+
+			Passenger passenger = passengersInTheWorld.get(j);
+
+			if (!passenger.isPickedUp()){
+
+				System.out.println("Passenger named " + passenger.getName() + " is currently waiting to be picked up from stop " + passenger.getStartingStop());
+
+			}
+
+			if (passenger.isPickedUp() && !passenger.isDroppedOff()){
+
+				System.out.println("Passenger named " + passenger.getName() + " is currently on bus named " + getBusFromPassenger(passenger).getName());
+
+			}
+
+		}
 	}
 }
