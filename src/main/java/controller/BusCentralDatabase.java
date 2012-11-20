@@ -147,6 +147,11 @@ public class BusCentralDatabase {
 		for (int i = 1; i < myFreeBuses.size(); i++){
 
 			Bus bus = myFreeBuses.get(i);
+			if (bus.getCurrentStop().equals(passenger.getStartingStop())){
+
+				return bus;
+
+			}
 
 			if (firstBus.distance(passenger.getStartingStop()) > bus.distance(passenger.getStartingStop())){
 

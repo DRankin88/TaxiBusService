@@ -136,6 +136,23 @@ public class Bus {
 
 		LinkedList<Vertex> pathToTarget = AllPairsShortestPath.getPath(currentStop.getName(), targetStop.getName());
 
+		if (pathToTarget.size() == 1){
+			
+			return cost;
+			
+		}
+		
+		if (pathToTarget.size() == 2){
+			
+			Vertex A = pathToTarget.get(0);
+			Vertex B = pathToTarget.get(1);
+			
+			cost += graph.getEdgeBetweenVertices(A, B).getWeight();
+			
+			return cost;
+			
+		}
+		
 		for (int i = 0; i < pathToTarget.size(); i++){
 
 			Vertex A = pathToTarget.get(i);

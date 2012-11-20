@@ -17,7 +17,7 @@ public class AssignClosestBus {
 		count++;
 
 		//Only printing the first 60 iterations of the time step
-		if(count < 60) {
+		if(count < 120000) {
 			BusCentralDatabase.printStateOfWorld();
 		}
 		
@@ -73,6 +73,7 @@ public class AssignClosestBus {
 				bus.setTargetStop(unallocatedPassengers.get(i).getStartingStop());
 				BusCentralDatabase.removeBusFromUnassigned(bus);
 				bus.setAssignedPassenger(unallocatedPassengers.get(i));
+				BusCentralDatabase.removePassengerFromUnallocated(unallocatedPassengers.get(i));
 
 			}	
 		}
@@ -104,6 +105,12 @@ public class AssignClosestBus {
 
 			Bus currentBus = allBuses.get(e);
 
+			if(currentBus.getPassengersOnBus().size() == 1){
+				
+				return;
+				
+			}
+			
 			if (currentBus.getCurrentStop().equals(currentBus.getTargetStop())){
 
 				ArrayList<Passenger> passengers = BusCentralDatabase.getPassengersAtMyStop(currentBus.getCurrentStop());
