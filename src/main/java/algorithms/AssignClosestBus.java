@@ -21,6 +21,7 @@ public class AssignClosestBus {
 		if(count < 120) {
 
 			BusCentralDatabase.printStateOfWorld();
+			
 		}
 
 		// Check if any buses can drop their passengers off right now and do it
