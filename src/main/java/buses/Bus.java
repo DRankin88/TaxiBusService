@@ -25,7 +25,7 @@ public class Bus {
 	private Graph graph;
 	private LinkedList<Vertex> path;
 	private int costToNextStop;
-	private Passenger assignedPassenger;
+	private String assignedPassengerName;
 	
 	public Bus(String name, int capacity, Vertex currentStop, Graph graph) {
 
@@ -34,15 +34,16 @@ public class Bus {
 		this.currentStop = currentStop;
 		this.graph = graph;
 		this.path= new LinkedList<Vertex>();
+		this.assignedPassengerName = "No One";
 
 	}
 	
-	public void setAssignedPassenger(Passenger assignedPassenger) {
-		this.assignedPassenger = assignedPassenger;
+	public void setAssignedPassengerName(String assignedPassengerName) {
+		this.assignedPassengerName = assignedPassengerName;
 	}
 
-	public Passenger getAssignedPassenger() {
-		return assignedPassenger;
+	public String getAssignedPassengerName() {
+		return assignedPassengerName;
 	}
 
 	public String getName() {

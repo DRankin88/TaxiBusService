@@ -214,13 +214,11 @@ public class BusCentralDatabase {
 
 			}
 
-			try{
+			if (!bus.getAssignedPassengerName().equals("No One")){
 
-				output.append(" and is assigned to pick up passenger " + bus.getAssignedPassenger().getName());
+				output.append(" and is assigned to pick up passenger " + bus.getAssignedPassengerName());
 
 			}
-
-			catch(NullPointerException n){}
 
 			System.out.println(output);
 

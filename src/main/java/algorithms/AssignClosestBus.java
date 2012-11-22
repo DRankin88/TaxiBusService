@@ -17,10 +17,12 @@ public class AssignClosestBus {
 		count++;
 
 		//Only printing the first 60 iterations of the time step
-		if(count < 120000) {
+
+		if(count < 120) {
+
 			BusCentralDatabase.printStateOfWorld();
 		}
-		
+
 		// Check if any buses can drop their passengers off right now and do it
 		dropOffPassengers();
 
@@ -54,6 +56,8 @@ public class AssignClosestBus {
 				int remove = BusCentralDatabase.getPassengerInTheWorld().indexOf(busesDropOffs.get(l));
 				BusCentralDatabase.getPassengerInTheWorld().remove(remove);
 				bus.removePassenger(busesDropOffs.get(l));
+				bus.setAssignedPassengerName("No One");
+				BusCentralDatabase.addBusToFreeBuses(bus);
 
 			}	
 		}
@@ -72,7 +76,9 @@ public class AssignClosestBus {
 				Bus bus = BusCentralDatabase.getClosestFreeBus(unallocatedPassengers.get(i));
 				bus.setTargetStop(unallocatedPassengers.get(i).getStartingStop());
 				BusCentralDatabase.removeBusFromUnassigned(bus);
-				bus.setAssignedPassenger(unallocatedPassengers.get(i));
+
+				bus.setAssignedPassengerName(unallocatedPassengers.get(i).getName());
+
 				BusCentralDatabase.removePassengerFromUnallocated(unallocatedPassengers.get(i));
 
 			}	
@@ -105,29 +111,32 @@ public class AssignClosestBus {
 
 			Bus currentBus = allBuses.get(e);
 
-			if(currentBus.getPassengersOnBus().size() == 1){
-				
-				return;
-				
-			}
-			
-			if (currentBus.getCurrentStop().equals(currentBus.getTargetStop())){
+
+			if ((currentBus.getPassengersOnBus().size() != 1) && currentBus.getCurrentStop().equals(currentBus.getTargetStop())){
+
 
 				ArrayList<Passenger> passengers = BusCentralDatabase.getPassengersAtMyStop(currentBus.getCurrentStop());
 
 				for (int y = 0; y < passengers.size(); y++){
 
-					currentBus.pickupPassenger(passengers.get(y));
-					passengers.get(y).setPickedUp(true);
-					currentBus.setAssignedPassenger(null);
-					BusCentralDatabase.removePassengerFromWaiting(passengers.get(y));
-					BusCentralDatabase.removePassengerFromUnallocated(passengers.get(y));
+					if(currentBus.getAssignedPassengerName().equals(passengers.get(y).getName())){
+
+						currentBus.pickupPassenger(passengers.get(y));
+						passengers.get(y).setPickedUp(true);
+						BusCentralDatabase.removePassengerFromWaiting(passengers.get(y));
+						BusCentralDatabase.removePassengerFromUnallocated(passengers.get(y));
+						currentBus.setAssignedPassengerName("No One");
+					}
 				}
 
-				// Now the bus must be routed to drop the passenger off
-				ArrayList<Passenger> busPassengers = currentBus.getPassengersOnBus();
-				currentBus.setTargetStop(busPassengers.get(0).getDestinationStop());
 
+				// Now the bus must be routed to drop the passenger off
+				if (!currentBus.getPassengersOnBus().isEmpty()){
+
+					ArrayList<Passenger> busPassengers = currentBus.getPassengersOnBus();
+					currentBus.setTargetStop(busPassengers.get(0).getDestinationStop());
+
+				}
 			}
 
 		}
