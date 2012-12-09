@@ -153,7 +153,7 @@ public class BusCentralDatabase {
 
 			}
 
-			if (firstBus.distance(passenger.getStartingStop()) > bus.distance(passenger.getStartingStop())){
+			if (closestBus.distance(passenger.getStartingStop()) > bus.distance(passenger.getStartingStop())){
 
 				closestBus = bus;
 

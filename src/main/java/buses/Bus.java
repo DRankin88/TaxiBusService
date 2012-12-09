@@ -26,8 +26,9 @@ public class Bus {
 	private LinkedList<Vertex> path;
 	private int costToNextStop;
 	private String assignedPassengerName;
+	private AllPairsShortestPath myPath;
 	
-	public Bus(String name, int capacity, Vertex currentStop, Graph graph) {
+	public Bus(String name, int capacity, Vertex currentStop, Graph graph, AllPairsShortestPath myPath) {
 
 		this.name = name;
 		this.capacity = capacity;
@@ -77,7 +78,9 @@ public class Bus {
 	public void setTargetStop(Vertex targetStop) {
 		this.targetStop = targetStop;
 
-		this.path = AllPairsShortestPath.getPath(currentStop.getName(), targetStop.getName());
+		AllPairsShortestPath thisPath = new AllPairsShortestPath(graph);
+		
+		this.path = thisPath.getPath(currentStop.getName(), targetStop.getName());
 
 	}
 
@@ -135,7 +138,7 @@ public class Bus {
 
 		int cost = 0;
 
-		LinkedList<Vertex> pathToTarget = AllPairsShortestPath.getPath(currentStop.getName(), targetStop.getName());
+		LinkedList<Vertex> pathToTarget = myPath.getPath(currentStop.getName(), targetStop.getName());
 
 		if (pathToTarget.size() == 1){
 			
@@ -154,7 +157,7 @@ public class Bus {
 			
 		}
 		
-		for (int i = 0; i < pathToTarget.size(); i++){
+		for (int i = 0; i < pathToTarget.size() - 1; i++){
 
 			Vertex A = pathToTarget.get(i);
 			Vertex B = pathToTarget.get(i+1);
@@ -180,8 +183,7 @@ public class Bus {
 			if (costToNextStop == 0){
 				//We have reached next stop	
 				currentStop = path.get(1);
-				path.remove(0);	
-
+				path.remove(0);
 			}
 		}
 

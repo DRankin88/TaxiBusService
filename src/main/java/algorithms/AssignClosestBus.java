@@ -1,25 +1,29 @@
 package algorithms;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 import passengers.Passenger;
 import vogella.Vertex;
 import buses.Bus;
 import controller.BusCentralDatabase;
 import controller.TimeStepper;
+import database.AllPairsShortestPath;
 
 public class AssignClosestBus {
 
 	private static int count = -1;
 
 	public static void doAlgorithm(){
+		
 
 		count++;
 
 		//Only printing the first 60 iterations of the time step
 
 		if(count < 120) {
-
+			System.out.println("TimeStep " + count);
 			BusCentralDatabase.printStateOfWorld();
 			
 		}

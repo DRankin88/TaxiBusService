@@ -2,6 +2,8 @@ package controller;
 
 import java.util.ArrayList;
 
+import database.AllPairsShortestPath;
+
 import passengers.Passenger;
 import scenarios.InputParser;
 import vogella.Graph;
@@ -20,11 +22,13 @@ public class TimeStepper {
 	private static Graph graph;
 	private static InputParser scenario;
 	private static int time = 1;
+	private static AllPairsShortestPath paths;
 
-	public TimeStepper (Graph graph, InputParser scenario) {
+	public TimeStepper (Graph graph, InputParser scenario, AllPairsShortestPath paths) {
 
 		this.graph = graph;
 		this.scenario = scenario;
+		this.paths = paths;
 
 	}
 
@@ -57,7 +61,7 @@ public class TimeStepper {
 			int capacity = Integer.parseInt(newBusesToCreate.get(i)[3]);
 			Vertex startingStop = graph.getVertex(newBusesToCreate.get(i)[4]);
 
-			Bus bus = new Bus(name, capacity, startingStop, graph);
+			Bus bus = new Bus(name, capacity, startingStop, graph, paths);
 			BusCentralDatabase.addBusesToWorld(bus);
 			BusCentralDatabase.addBusToFreeBuses(bus);
 		}
