@@ -53,7 +53,13 @@ public class AllPairsShortestPath {
 	public static LinkedList<Vertex> getPath(String startVertex, String finalVertex){
 		
 		HashMap temp = (HashMap) allPaths.get(startVertex);
-		return (LinkedList<Vertex>) temp.get(finalVertex);
+		LinkedList<Vertex> path = (LinkedList<Vertex>) temp.get(finalVertex);
+		
+		if (path == null){
+			return new LinkedList<Vertex>();
+		}
+		
+		return path;
 		
 	}
 

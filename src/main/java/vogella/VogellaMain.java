@@ -3,6 +3,7 @@ package vogella;
 import java.util.List;
 
 import algorithms.AssignClosestBus;
+import algorithms.DynamicReroutingCostMinimization;
 
 import scenarios.InputParser;
 import utilities.Parser;
@@ -24,7 +25,8 @@ public class VogellaMain {
 		TimeStepper timeStepper = new TimeStepper(busGraph,scenario, allPairsShortestPath);
 
 		while (true){
-			AssignClosestBus.doAlgorithm();
+			DynamicReroutingCostMinimization.doAlgorithm();
+		//	AssignClosestBus.doAlgorithm();
 		}
 	}
 

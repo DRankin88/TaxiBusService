@@ -26,9 +26,9 @@ public class TimeStepper {
 
 	public TimeStepper (Graph graph, InputParser scenario, AllPairsShortestPath paths) {
 
-		this.graph = graph;
-		this.scenario = scenario;
-		this.paths = paths;
+		TimeStepper.graph = graph;
+		TimeStepper.scenario = scenario;
+		TimeStepper.paths = paths;
 
 	}
 

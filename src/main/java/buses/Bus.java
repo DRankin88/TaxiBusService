@@ -3,8 +3,6 @@ package buses;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import com.sun.org.apache.bcel.internal.generic.CPInstruction;
-
 import passengers.Passenger;
 import vogella.Graph;
 import vogella.Vertex;
