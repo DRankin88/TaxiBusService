@@ -23,9 +23,11 @@ public class VogellaMain {
 
 		InputParser scenario = new InputParser(args[1]);
 		TimeStepper timeStepper = new TimeStepper(busGraph,scenario, allPairsShortestPath);
-
+		
+		DynamicReroutingCostMinimization dynAlgo = new DynamicReroutingCostMinimization();
+		
 		while (true){
-			DynamicReroutingCostMinimization.doAlgorithm();
+			dynAlgo.doAlgorithm(busGraph);
 		//	AssignClosestBus.doAlgorithm();
 		}
 	}

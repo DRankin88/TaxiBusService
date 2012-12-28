@@ -1,6 +1,15 @@
 package hamilton;
 
+import java.util.ArrayList;
+
 public class HamiltonPath {
+
+	private ArrayList<int[]> allPaths = new ArrayList<int[]>();
+	
+	public ArrayList<int[]> getAllPaths() {
+		return allPaths;
+	}
+
 	public static void main(String[] args){
 		HamiltonPath obj = new HamiltonPath();
 
@@ -21,20 +30,17 @@ public class HamiltonPath {
 				{1,1,1,1,1,1,1,1,1,1},
 				{1,1,1,1,1,1,1,1,1,1},
 		};
-		
-		int[][]t = {{1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1},
-				{1,1,1,1,1,1,1,1,1,1,1,1,1}
+
+		int[][]t = {{1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1},
+				{1,1,1,1,1,1,1,1,1,1}
 		};
 
 		int[][]b = {{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -71,11 +77,12 @@ public class HamiltonPath {
 		//obj.allHamiltonPath(y);   //list all Hamiltonian paths of graph
 		obj.HamiltonPath(t,1);  //list all Hamiltonian paths start at point 1
 		System.out.println(count);
+		System.out.println(obj.allPaths.size());
 
 	}
 
 	static int len;
-	static int[]path;
+	int[]path;
 	static int count = 0;    
 
 	public void allHamiltonPath(int[][]x){  //List all possible Hamilton path in the graph
@@ -114,7 +121,10 @@ public class HamiltonPath {
 					count++;   
 					if (count ==1)
 						System.out.println("Hamilton path of graph: ");
-					//		display(path);
+			//		display(path);
+					int[] possiblePath = path.clone();
+					
+					allPaths.add(possiblePath);
 					l--;
 					continue;
 				}
@@ -129,11 +139,13 @@ public class HamiltonPath {
 
 	public void display(int[]x){
 
-		System.out.print(count+" : ");
+		
+			System.out.print(count+" : ");
 		for(int i:x){
-			System.out.print(i+" ");
+					System.out.print(i+" ");
 		}
-		System.out.println();   
+			System.out.println();   
+			
 	}
 
 	private boolean detect(int[]x,int target){ //Detect duplicate point in Halmilton path 
