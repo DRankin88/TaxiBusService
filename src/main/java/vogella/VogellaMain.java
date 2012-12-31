@@ -27,7 +27,7 @@ public class VogellaMain {
 		DynamicReroutingCostMinimization dynAlgo = new DynamicReroutingCostMinimization();
 		
 		while (true){
-			dynAlgo.doAlgorithm(busGraph);
+			dynAlgo.doAlgorithm(busGraph, allPairsShortestPath);
 		//	AssignClosestBus.doAlgorithm();
 		}
 	}

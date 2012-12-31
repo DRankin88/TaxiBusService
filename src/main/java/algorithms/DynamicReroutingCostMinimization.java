@@ -8,11 +8,13 @@ import java.util.LinkedList;
 
 import passengers.Passenger;
 import sun.awt.image.ImageWatched.Link;
+import vogella.Edge;
 import vogella.Graph;
 import vogella.Vertex;
 import buses.Bus;
 import controller.BusCentralDatabase;
 import controller.TimeStepper;
+import database.AllPairsShortestPath;
 
 /**
  * This is the algorithm described in my emails to Murray Cole
@@ -22,10 +24,13 @@ import controller.TimeStepper;
 public class DynamicReroutingCostMinimization {
 
 	private static int count = -1;
+	private Graph busGraph;
+	private AllPairsShortestPath allPairsShortestPath;
 
-	public void doAlgorithm(Graph buGraph){
+	public void doAlgorithm(Graph busGraph, AllPairsShortestPath allPairsShortestPath){
 
-
+		this.busGraph = busGraph;
+		this.allPairsShortestPath = allPairsShortestPath;
 
 		if(count < 120) {
 			count++;
@@ -54,7 +59,7 @@ public class DynamicReroutingCostMinimization {
 
 	}
 
-	private static void dropOffPassengers(){
+	private void dropOffPassengers(){
 
 		ArrayList<Bus> allBuses = BusCentralDatabase.getBusesInTheWorld();
 
@@ -141,8 +146,7 @@ public class DynamicReroutingCostMinimization {
 
 		LinkedList<Vertex> optimalPath = bestPath(rootNode, pickupStops, dropoffs, pairs);
 
-
-
+		System.out.println("dbdf");
 	}
 
 	/**
@@ -176,8 +180,8 @@ public class DynamicReroutingCostMinimization {
 		// Place the root as one
 		map.put(1, rootNode);
 
-		
-		
+
+
 		// place the pickups
 		for (int i = 2, j = 0; i < pickups.size() + 2; i++, j++){
 
@@ -186,7 +190,7 @@ public class DynamicReroutingCostMinimization {
 		}
 
 		int terminator = map.size() + 1 + dropOffs.size();
-		
+
 		// place the dropoffs
 		for (int i = map.size() + 1, j = 0; i < terminator; i++, j++){
 
@@ -195,45 +199,107 @@ public class DynamicReroutingCostMinimization {
 		}
 
 		ArrayList<LinkedList<Vertex>> possiblePaths = new ArrayList<LinkedList<Vertex>>();
+
 		// Cull the paths that are not possible because the drop off stop is being visited before the pickup stop
 		for (int i = 0; i < enumeratedPaths.size(); i++){
-			
+
 			LinkedList<Vertex> path = hamToPath(enumeratedPaths.get(i), map);
-			
+
 			if (!happensBeforeViolation(path, pairs)){
-			
+
+				// Before we add this path to the list of possible paths we must first convert it into a real path in the graph
+				path = convertToRealPath(path);
 				possiblePaths.add(path);
-			
+
 			}
 		}
 
 		// Now need to find the shortest path from the possible paths.
-		
-		
-		return null;
+
+		LinkedList<Vertex> shortestPath = possiblePaths.get(0);
+
+		for (int i = 1; i < possiblePaths.size(); i++){
+
+			if (sizeOfPath(shortestPath) > sizeOfPath(possiblePaths.get(i))) {
+
+				shortestPath = possiblePaths.get(i);
+
+			}
+		}
+
+		return shortestPath;
 
 	}
 	
-	private boolean happensBeforeViolation (LinkedList<Vertex> path, ArrayList<ArrayList<Vertex>> pairs){
+	private LinkedList<Vertex> convertToRealPath(LinkedList<Vertex> path){
 		
-		for (int i = 0; i < pairs.size(); i++){
+		LinkedList<Vertex> finalPath = new LinkedList<Vertex>();
+		
+		for (int i = 0; i < path.size() - 1; i++){
 			
-			Vertex pickup = pairs.get(i).get(0);
-			Vertex dropoff = pairs.get(i).get(1);
-			
-			int pickupIndex = path.indexOf(pickup);
-			int dropoffIndex = path.indexOf(dropoff);
-			
-			if (dropoffIndex < pickupIndex){
-				
-				return true;
-				
-			}
+			LinkedList<Vertex> temp = allPairsShortestPath.getPath(path.get(i).getName(), path.get(i+1).getName());
+			finalPath.addAll(temp);
 			
 		}
 		
-		return false;
+		for (int j = 0; j < finalPath.size() - 1; j++){
+			
+			Vertex current = finalPath.get(j);
+			Vertex next = finalPath.get(j+1);
+			
+			if (current.equals(next)){
+				
+				finalPath.remove(current);
+				
+			}
+		}
 		
+		return finalPath;
+		
+	}
+
+	private int sizeOfPath (LinkedList<Vertex> path){
+
+		int numberOfEdges = path.size() - 1;
+		int cost = 0;
+
+		for (int i = 0; i < numberOfEdges; i++){
+
+			Edge edge = busGraph.getEdgeBetweenVertices(path.get(i), path.get(i+1));
+			cost += edge.getWeight();
+
+		}
+
+		return cost;
+
+	}
+
+	/**
+	 * Reports true if the path in question violates the happens before relation of pickups and drop offs.
+	 * @param path
+	 * @param pairs
+	 * @return
+	 */
+	private boolean happensBeforeViolation (LinkedList<Vertex> path, ArrayList<ArrayList<Vertex>> pairs){
+
+		for (int i = 0; i < pairs.size(); i++){
+
+			Vertex pickup = pairs.get(i).get(0);
+			Vertex dropoff = pairs.get(i).get(1);
+
+			int pickupIndex = path.indexOf(pickup);
+			int dropoffIndex = path.indexOf(dropoff);
+
+			if (dropoffIndex < pickupIndex){
+
+				return true;
+
+			}
+
+		}
+
+		return false;
+
 	}
 
 	/**
