@@ -120,7 +120,7 @@ public class HamiltonPath {
 				if(l==len-1){//Except initial point already count =>success connect all point
 					count++;   
 					if (count ==1)
-						System.out.println("Hamilton path of graph: ");
+						System.out.println("");
 			//		display(path);
 					int[] possiblePath = path.clone();
 					

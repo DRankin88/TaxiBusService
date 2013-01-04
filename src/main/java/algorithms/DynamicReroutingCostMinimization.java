@@ -40,43 +40,54 @@ public class DynamicReroutingCostMinimization {
 		}
 		if (BusCentralDatabase.getBusesInTheWorld().size() > 0){
 			// Firstly any bus that is at a stop in which a passenger could be dropped off should do so
-			//		dropOffPassengers();
+			dropOffPassengers();
 
 			// If there are unallocated passengers then we may need to change the paths that buses are currently moving along
 			if (BusCentralDatabase.getUnallocatedPassengers().size() > 0){
 				dynamicReroutingAndPassengerAllocation();
 			}
 
-			// TODO Pick up passenger if bus is at destination
-			//		pickupPassengers();
+			// Pick up passenger if bus is at destination
+			pickupPassengers();
 
 			// Tell all the buses to move along their routes to the next location
-			//		incrimentBuses();
+			incrimentBuses();
 		}
+
 		TimeStepper.step();
 
-
-
+	}
+	
+	private void pickupPassengers(){
+		
+		ArrayList<Bus> busesInTheWorld = BusCentralDatabase.getBusesInTheWorld();
+		
+		for (int i = 0; i < busesInTheWorld.size(); i++){
+			
+			Bus bus = busesInTheWorld.get(i);
+			
+			if (bus.getCostToNextStop() == 0){
+				
+				bus.pickupPassengers();
+				
+			}	
+		}		
 	}
 
 	private void dropOffPassengers(){
 
 		ArrayList<Bus> allBuses = BusCentralDatabase.getBusesInTheWorld();
 
-		for (int i = 0; i < allBuses.size(); i++) {
-
+		for (int i = 0; i < allBuses.size(); i++){
+			
 			Bus bus = allBuses.get(i);
-			ArrayList<Passenger> busesDropOffs = bus.getPassengersWantThisStop();
-
-			// Remove all droppable passengers from every bus
-			for (int l = 0; l < busesDropOffs.size(); l++){
-
-				busesDropOffs.get(l).setDroppedOff(true);
-				int remove = BusCentralDatabase.getPassengerInTheWorld().indexOf(busesDropOffs.get(l));
-				BusCentralDatabase.getPassengerInTheWorld().remove(remove);
-				bus.removePassenger(busesDropOffs.get(l));
-
-			}	
+			
+			if (bus.getCostToNextStop() == 0){
+				
+				bus.dropOffPassengers();
+				
+			}
+			
 		}
 	}
 
@@ -145,8 +156,15 @@ public class DynamicReroutingCostMinimization {
 		}
 
 		LinkedList<Vertex> optimalPath = bestPath(rootNode, pickupStops, dropoffs, pairs);
+		firstBus.setPath(optimalPath);
 
-		System.out.println("dbdf");
+		int numberOfPickups = pickups.size();
+
+		for (int i = 0; i < numberOfPickups; i++){
+
+			firstBus.assignPassenger(pickups.get(0));
+
+		}
 	}
 
 	/**
@@ -180,10 +198,8 @@ public class DynamicReroutingCostMinimization {
 		// Place the root as one
 		map.put(1, rootNode);
 
-
-
 		// place the pickups
-		for (int i = 2, j = 0; i < pickups.size() + 2; i++, j++){
+		for (int i = 2, j = 0; j < pickups.size(); i++, j++){
 
 			map.put(i, pickups.get(j));
 
@@ -192,7 +208,7 @@ public class DynamicReroutingCostMinimization {
 		int terminator = map.size() + 1 + dropOffs.size();
 
 		// place the dropoffs
-		for (int i = map.size() + 1, j = 0; i < terminator; i++, j++){
+		for (int i = map.size() + 1, j = 0; j < dropOffs.size(); i++, j++){
 
 			map.put(i, dropOffs.get(j));
 
@@ -204,11 +220,10 @@ public class DynamicReroutingCostMinimization {
 		for (int i = 0; i < enumeratedPaths.size(); i++){
 
 			LinkedList<Vertex> path = hamToPath(enumeratedPaths.get(i), map);
+			path = convertToRealPath(path);
 
 			if (!happensBeforeViolation(path, pairs)){
 
-				// Before we add this path to the list of possible paths we must first convert it into a real path in the graph
-				path = convertToRealPath(path);
 				possiblePaths.add(path);
 
 			}
@@ -230,32 +245,32 @@ public class DynamicReroutingCostMinimization {
 		return shortestPath;
 
 	}
-	
+
 	private LinkedList<Vertex> convertToRealPath(LinkedList<Vertex> path){
-		
+
 		LinkedList<Vertex> finalPath = new LinkedList<Vertex>();
-		
+
 		for (int i = 0; i < path.size() - 1; i++){
-			
+
 			LinkedList<Vertex> temp = allPairsShortestPath.getPath(path.get(i).getName(), path.get(i+1).getName());
 			finalPath.addAll(temp);
-			
+
 		}
-		
+
 		for (int j = 0; j < finalPath.size() - 1; j++){
-			
+
 			Vertex current = finalPath.get(j);
 			Vertex next = finalPath.get(j+1);
-			
+
 			if (current.equals(next)){
-				
-				finalPath.remove(current);
-				
+
+				finalPath.remove(j);
+
 			}
 		}
-		
+
 		return finalPath;
-		
+
 	}
 
 	private int sizeOfPath (LinkedList<Vertex> path){
@@ -288,7 +303,7 @@ public class DynamicReroutingCostMinimization {
 			Vertex dropoff = pairs.get(i).get(1);
 
 			int pickupIndex = path.indexOf(pickup);
-			int dropoffIndex = path.indexOf(dropoff);
+			int dropoffIndex = path.lastIndexOf(dropoff);
 
 			if (dropoffIndex < pickupIndex){
 
@@ -321,4 +336,13 @@ public class DynamicReroutingCostMinimization {
 
 	}
 
+	private void incrimentBuses(){
+
+		for (int i = 0; i < BusCentralDatabase.getBusesInTheWorld().size(); i++){
+
+			Bus bus = BusCentralDatabase.getBusesInTheWorld().get(i);
+			bus.moveAlongPath();
+
+		}
+	}
 }

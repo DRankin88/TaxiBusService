@@ -3,6 +3,8 @@ package buses;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import controller.BusCentralDatabase;
+
 import passengers.Passenger;
 import vogella.Graph;
 import vogella.Vertex;
@@ -25,7 +27,8 @@ public class Bus {
 	private int costToNextStop;
 	private String assignedPassengerName;
 	private AllPairsShortestPath myPath;
-	
+	private ArrayList<Passenger> assignedPassengers = new ArrayList<Passenger>();
+
 	public Bus(String name, int capacity, Vertex currentStop, Graph graph, AllPairsShortestPath myPath) {
 
 		this.name = name;
@@ -36,7 +39,8 @@ public class Bus {
 		this.assignedPassengerName = "No One";
 
 	}
-	
+
+	// DEPRACATED
 	public void setAssignedPassengerName(String assignedPassengerName) {
 		this.assignedPassengerName = assignedPassengerName;
 	}
@@ -69,6 +73,10 @@ public class Bus {
 		return passengersOnBus;
 	}
 
+	public void setPath(LinkedList<Vertex> path) {
+		this.path = path;
+	}
+
 	public Vertex getTargetStop() {
 		return targetStop;
 	}
@@ -77,7 +85,7 @@ public class Bus {
 		this.targetStop = targetStop;
 
 		AllPairsShortestPath thisPath = new AllPairsShortestPath(graph);
-		
+
 		this.path = thisPath.getPath(currentStop.getName(), targetStop.getName());
 
 	}
@@ -89,11 +97,11 @@ public class Bus {
 	public void setCurrentStop(Vertex currentStop) {
 		this.currentStop = currentStop;
 	}
-	
+
 	public void removePassenger(Passenger passenger){
-		
+
 		passengersOnBus.remove(passenger);
-		
+
 	}
 
 	/**
@@ -119,11 +127,51 @@ public class Bus {
 
 	}
 
-	
+	// DEPRACATED
 	public void pickupPassenger(Passenger passenger){
 
 		passengersOnBus.add(passenger);
 
+	}
+
+	public void dropOffPassengers(){
+
+		int passengercount = passengersOnBus.size();
+		ArrayList<Passenger> dropOffs = new ArrayList<Passenger>();
+
+		for (int i = 0; i < passengercount; i++){
+
+			Passenger passenger = passengersOnBus.get(i);
+
+			if (passenger.getDestinationStop().equals(currentStop)){
+
+				dropOffs.add(passenger);
+
+			}
+		}
+
+		passengersOnBus.removeAll(dropOffs);
+		BusCentralDatabase.removePassengersFromTheWorld(dropOffs);
+		
+	}
+
+	public void pickupPassengers(){
+
+		ArrayList<Passenger> pickups = BusCentralDatabase.getPassengersAtMyStop(currentStop);
+		int numberOfPickups = pickups.size();
+
+		for (int i = 0; i < numberOfPickups; i++){
+
+			Passenger passenger = pickups.get(i);
+
+			// Pickup the passenger if true
+			if (assignedPassengers.contains(passenger)){
+
+				passengersOnBus.add(passenger);
+				passenger.setPickedUp(true);
+
+			}
+		}
 	}
 
 	/**
@@ -139,22 +187,22 @@ public class Bus {
 		LinkedList<Vertex> pathToTarget = myPath.getPath(currentStop.getName(), targetStop.getName());
 
 		if (pathToTarget.size() == 1){
-			
+
 			return cost;
-			
+
 		}
-		
+
 		if (pathToTarget.size() == 2){
-			
+
 			Vertex A = pathToTarget.get(0);
 			Vertex B = pathToTarget.get(1);
-			
+
 			cost += graph.getEdgeBetweenVertices(A, B).getWeight();
-			
+
 			return cost;
-			
+
 		}
-		
+
 		for (int i = 0; i < pathToTarget.size() - 1; i++){
 
 			Vertex A = pathToTarget.get(i);
@@ -188,7 +236,7 @@ public class Bus {
 		// We are at a stop
 		else if (graph.getVertexes().contains(currentStop)) {
 
-			
+
 			if(!path.isEmpty()){
 
 
@@ -211,6 +259,15 @@ public class Bus {
 
 	}
 
+	/**
+	 * This assigns a passenger to this bus for pickup
+	 * @param pickups
+	 */
+	public void assignPassenger(Passenger pickup){
 
+		assignedPassengers.add(pickup);
+		BusCentralDatabase.removePassengerFromUnallocated(pickup);
+
+	}
 
 }

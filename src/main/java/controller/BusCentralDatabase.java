@@ -186,6 +186,12 @@ public class BusCentralDatabase {
 		return null;
 
 	}
+	
+	public static void removePassengersFromTheWorld (ArrayList<Passenger> passengers){
+		
+		passengersInTheWorld.removeAll(passengers);
+		
+	}
 
 	public static void printStateOfWorld(){
 

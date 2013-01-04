@@ -34,7 +34,7 @@ public class AssignClosestBus {
 		// Check if there are outstanding passengers that need to be assigned a free bus and do it
 		allocatePassengersToBuses();
 
-		// TODO Pick up passenger if bus is at destination
+		// Pick up passenger if bus is at destination
 		pickupPassengers();
 
 		// Tell all the buses to move along their routes to the next location
