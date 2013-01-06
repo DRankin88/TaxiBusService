@@ -86,8 +86,7 @@ public class DynamicReroutingCostMinimization {
 				
 				bus.dropOffPassengers();
 				
-			}
-			
+			}	
 		}
 	}
 
@@ -96,8 +95,6 @@ public class DynamicReroutingCostMinimization {
 
 		// For testing we deal with just the first bus
 		Bus firstBus = BusCentralDatabase.getBusesInTheWorld().get(0);
-
-		// For this bus hand the helper method the needed information to calculate the potential best path to serve all of the customers
 
 		// For the rootNode
 		Vertex rootNode = firstBus.getCurrentStop();
@@ -108,10 +105,11 @@ public class DynamicReroutingCostMinimization {
 			rootNode = firstBus.getPath().get(1);
 
 		}
-
+ 
 		// Getting the list of pickups. These are the stops the will be part of the picking up of a passenger
 		ArrayList<Passenger> pickups = BusCentralDatabase.getUnallocatedPassengers();
 		ArrayList<Vertex> pickupStops = new ArrayList<Vertex>();
+		
 		for (int i = 0; i < pickups.size(); i++){
 
 			if (!pickupStops.contains(pickups.get(i).getStartingStop())){
@@ -156,7 +154,23 @@ public class DynamicReroutingCostMinimization {
 		}
 
 		LinkedList<Vertex> optimalPath = bestPath(rootNode, pickupStops, dropoffs, pairs);
-		firstBus.setPath(optimalPath);
+		
+		// You can't just do this because the bus may be between some stops
+		
+		if (firstBus.getCostToNextStop() > 0){
+		
+			LinkedList<Vertex> path = new LinkedList<Vertex>();
+			path.add(firstBus.getCurrentStop());
+			path.addAll(optimalPath);
+			firstBus.setPath(path);
+		
+		}
+		
+		else {
+			
+			firstBus.setPath(optimalPath);
+		
+		}
 
 		int numberOfPickups = pickups.size();
 
