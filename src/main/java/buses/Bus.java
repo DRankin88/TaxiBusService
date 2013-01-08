@@ -45,6 +45,10 @@ public class Bus {
 		this.assignedPassengerName = assignedPassengerName;
 	}
 
+	public ArrayList<Passenger> getAssignedPassengers() {
+		return assignedPassengers;
+	}
+
 	public String getAssignedPassengerName() {
 		return assignedPassengerName;
 	}

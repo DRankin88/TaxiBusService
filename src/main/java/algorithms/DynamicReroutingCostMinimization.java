@@ -3,11 +3,13 @@ package algorithms;
 import hamilton.HamiltonPath;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
 import passengers.Passenger;
-import sun.awt.image.ImageWatched.Link;
 import vogella.Edge;
 import vogella.Graph;
 import vogella.Vertex;
@@ -57,19 +59,19 @@ public class DynamicReroutingCostMinimization {
 		TimeStepper.step();
 
 	}
-	
+
 	private void pickupPassengers(){
-		
+
 		ArrayList<Bus> busesInTheWorld = BusCentralDatabase.getBusesInTheWorld();
-		
+
 		for (int i = 0; i < busesInTheWorld.size(); i++){
-			
+
 			Bus bus = busesInTheWorld.get(i);
-			
+
 			if (bus.getCostToNextStop() == 0){
-				
+
 				bus.pickupPassengers();
-				
+
 			}	
 		}		
 	}
@@ -79,13 +81,13 @@ public class DynamicReroutingCostMinimization {
 		ArrayList<Bus> allBuses = BusCentralDatabase.getBusesInTheWorld();
 
 		for (int i = 0; i < allBuses.size(); i++){
-			
+
 			Bus bus = allBuses.get(i);
-			
+
 			if (bus.getCostToNextStop() == 0){
-				
+
 				bus.dropOffPassengers();
-				
+
 			}	
 		}
 	}
@@ -94,91 +96,157 @@ public class DynamicReroutingCostMinimization {
 	private void dynamicReroutingAndPassengerAllocation(){
 
 		// For testing we deal with just the first bus
-		Bus firstBus = BusCentralDatabase.getBusesInTheWorld().get(0);
+		//Bus firstBus = BusCentralDatabase.getBusesInTheWorld().get(0);
 
-		// For the rootNode
-		Vertex rootNode = firstBus.getCurrentStop();
-
-		// If the bus is between stops then the rootNode will be the next node
-		if (firstBus.getCostToNextStop() != 0){
-
-			rootNode = firstBus.getPath().get(1);
-
-		}
- 
-		// Getting the list of pickups. These are the stops the will be part of the picking up of a passenger
-		ArrayList<Passenger> pickups = BusCentralDatabase.getUnallocatedPassengers();
-		ArrayList<Vertex> pickupStops = new ArrayList<Vertex>();
+		HashMap<Bus, LinkedList<Vertex>> BusesAndPotentialPaths = new HashMap<Bus, LinkedList<Vertex>>();
 		
-		for (int i = 0; i < pickups.size(); i++){
+		/**
+		 * We need to decide how to reroute our buses when we have new passengers added to the world. 
+		 * Simply perform this computation over all of the buses and store the total cost of doing that. 
+		 */
+		for (int q = 0; q < BusCentralDatabase.getBusesInTheWorld().size(); q++){
 
-			if (!pickupStops.contains(pickups.get(i).getStartingStop())){
+			Bus firstBus = BusCentralDatabase.getBusesInTheWorld().get(q);
+			// For the rootNode
+			Vertex rootNode = firstBus.getCurrentStop();
 
-				pickupStops.add(pickups.get(i).getStartingStop());
+			// If the bus is between stops then the rootNode will be the next node
+			if (firstBus.getCostToNextStop() != 0){
+//TODO Changed to undo this as pathfinding was broken. Need to try to keep this statement as is but without compromising the calculation of distance
+				//Suggest debugging through and just checking the logic
+				rootNode = firstBus.getPath().get(0);
 
 			}
-		}
 
-		// Getting the list of dropoff. These include the destination of passengers currently on the bus and passengers 
-		ArrayList<Vertex> dropoffs = new ArrayList<Vertex>();
-		ArrayList<Passenger> busPassengers = firstBus.getPassengersOnBus();
-		for (int j = 0; j < busPassengers.size(); j++){
+			// Getting the list of pickups. These are the stops the will be part of the picking up of a passenger
+			ArrayList<Passenger> pickups = BusCentralDatabase.getUnallocatedPassengers();
+			pickups.addAll(firstBus.getAssignedPassengers());
+			ArrayList<Vertex> pickupStops = new ArrayList<Vertex>();
 
-			if (!dropoffs.contains(busPassengers.get(j).getDestinationStop())){
+			for (int i = 0; i < pickups.size(); i++){
 
-				dropoffs.add(busPassengers.get(j).getDestinationStop());
+				if (!pickupStops.contains(pickups.get(i).getStartingStop())){
 
-			}			
-		}
+					pickupStops.add(pickups.get(i).getStartingStop());
 
-		for (int i = 0; i < pickups.size(); i++){
+				}
+			}
 
-			if (!dropoffs.contains(pickups.get(i).getDestinationStop())){
+			// Getting the list of dropoff. These include the destination of passengers currently on the bus and passengers 
+			ArrayList<Vertex> dropoffs = new ArrayList<Vertex>();
+			ArrayList<Passenger> busPassengers = firstBus.getPassengersOnBus();
+			for (int j = 0; j < busPassengers.size(); j++){
 
-				dropoffs.add(pickups.get(i).getDestinationStop());
+				if (!dropoffs.contains(busPassengers.get(j).getDestinationStop())){
+
+					dropoffs.add(busPassengers.get(j).getDestinationStop());
+
+				}			
+			}
+
+			for (int i = 0; i < pickups.size(); i++){
+
+				if (!dropoffs.contains(pickups.get(i).getDestinationStop())){
+
+					dropoffs.add(pickups.get(i).getDestinationStop());
+
+				}
+			}
+
+			// This should have added all pickup and dropoff stops and the root. Now must pair the pickups and dropoffs
+			ArrayList<ArrayList<Vertex>> pairs = new ArrayList<ArrayList<Vertex>>();
+			for (int i = 0; i < pickups.size(); i++){
+
+				Vertex start = pickups.get(i).getStartingStop();
+				Vertex finish = pickups.get(i).getDestinationStop();
+				ArrayList<Vertex> tuple = new ArrayList<Vertex>();
+				tuple.add(start);
+				tuple.add(finish);
+				pairs.add(tuple);
 
 			}
-		}
 
-		// This should have added all pickup and dropoff stops and the root. Now must pair the pickups and dropoffs
-		ArrayList<ArrayList<Vertex>> pairs = new ArrayList<ArrayList<Vertex>>();
-		for (int i = 0; i < pickups.size(); i++){
+			LinkedList<Vertex> optimalPath = bestPath(rootNode, pickupStops, dropoffs, pairs);
 
-			Vertex start = pickups.get(i).getStartingStop();
-			Vertex finish = pickups.get(i).getDestinationStop();
-			ArrayList<Vertex> tuple = new ArrayList<Vertex>();
-			tuple.add(start);
-			tuple.add(finish);
-			pairs.add(tuple);
+			// You can't just do this because the bus may be between some stops
 
-		}
+			if (firstBus.getCostToNextStop() > 0){
 
-		LinkedList<Vertex> optimalPath = bestPath(rootNode, pickupStops, dropoffs, pairs);
-		
-		// You can't just do this because the bus may be between some stops
-		
-		if (firstBus.getCostToNextStop() > 0){
-		
-			LinkedList<Vertex> path = new LinkedList<Vertex>();
-			path.add(firstBus.getCurrentStop());
-			path.addAll(optimalPath);
-			firstBus.setPath(path);
-		
-		}
-		
-		else {
+				LinkedList<Vertex> path = new LinkedList<Vertex>();
+				path.add(firstBus.getCurrentStop());
+				path.addAll(optimalPath);
+		//		firstBus.setPath(path);
+
+			}
+
+			else {
+
+		//		firstBus.setPath(optimalPath);
+
+			}
+
 			
-			firstBus.setPath(optimalPath);
+/*
+			for (int i = 0; i < numberOfPickups; i++){
+
+				firstBus.assignPassenger(pickups.get(0));
+
+			}*/
+			
+			BusesAndPotentialPaths.put(firstBus, optimalPath);
+			
+		}	
 		
+		int totalSystemCost = 0;
+		
+		for (int i = 0; i < BusCentralDatabase.getBusesInTheWorld().size(); i++){
+			
+			totalSystemCost += sizeOfPath(BusCentralDatabase.getBusesInTheWorld().get(i).getPath());
+			
+		}
+		
+		HashMap BusesAndCosts = new HashMap<Bus, Integer>();
+		
+		for (int i = 0; i < BusesAndPotentialPaths.size(); i++){
+			
+			Bus bus = BusCentralDatabase.getBusesInTheWorld().get(i);
+			int newSystemCost = totalSystemCost - sizeOfPath(BusCentralDatabase.getBusesInTheWorld().get(i).getPath());
+			newSystemCost += sizeOfPath(BusesAndPotentialPaths.get(bus));
+			BusesAndCosts.put(bus, newSystemCost);
+			
+		}
+		
+		int min = Collections.min(BusesAndCosts.values());
+		
+		
+		
+		Iterator it = BusesAndCosts.entrySet().iterator();
+		Bus bus = null;
+		while (it.hasNext()){
+			
+			Map.Entry<Bus, Integer> pairs = (Map.Entry<Bus, Integer>)it.next();
+			
+			if (pairs.getValue() == min){
+				
+				bus = pairs.getKey();
+				break;
+				
+			}
+			
 		}
 
-		int numberOfPickups = pickups.size();
-
+		bus.setPath(BusesAndPotentialPaths.get(bus));
+		
+		int numberOfPickups = BusCentralDatabase.getUnallocatedPassengers().size();
+		
 		for (int i = 0; i < numberOfPickups; i++){
 
-			firstBus.assignPassenger(pickups.get(0));
+			bus.assignPassenger(BusCentralDatabase.getUnallocatedPassengers().get(0));
 
 		}
+		
+		System.out.println("TEST");
+		
 	}
 
 	/**
