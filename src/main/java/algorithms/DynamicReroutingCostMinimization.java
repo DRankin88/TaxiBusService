@@ -99,7 +99,7 @@ public class DynamicReroutingCostMinimization {
 		//Bus firstBus = BusCentralDatabase.getBusesInTheWorld().get(0);
 
 		HashMap<Bus, LinkedList<Vertex>> BusesAndPotentialPaths = new HashMap<Bus, LinkedList<Vertex>>();
-		
+
 		/**
 		 * We need to decide how to reroute our buses when we have new passengers added to the world. 
 		 * Simply perform this computation over all of the buses and store the total cost of doing that. 
@@ -112,9 +112,8 @@ public class DynamicReroutingCostMinimization {
 
 			// If the bus is between stops then the rootNode will be the next node
 			if (firstBus.getCostToNextStop() != 0){
-//TODO Changed to undo this as pathfinding was broken. Need to try to keep this statement as is but without compromising the calculation of distance
-				//Suggest debugging through and just checking the logic
-				rootNode = firstBus.getPath().get(0);
+
+				rootNode = firstBus.getPath().get(1);
 
 			}
 
@@ -175,78 +174,111 @@ public class DynamicReroutingCostMinimization {
 				LinkedList<Vertex> path = new LinkedList<Vertex>();
 				path.add(firstBus.getCurrentStop());
 				path.addAll(optimalPath);
-		//		firstBus.setPath(path);
+				optimalPath = path;
+				//		firstBus.setPath(path);
 
 			}
 
 			else {
 
-		//		firstBus.setPath(optimalPath);
+				//		firstBus.setPath(optimalPath);
 
 			}
 
-			
-/*
+
+			/*
 			for (int i = 0; i < numberOfPickups; i++){
 
 				firstBus.assignPassenger(pickups.get(0));
 
 			}*/
-			
+
 			BusesAndPotentialPaths.put(firstBus, optimalPath);
-			
+
 		}	
-		
+
 		int totalSystemCost = 0;
-		
+
 		for (int i = 0; i < BusCentralDatabase.getBusesInTheWorld().size(); i++){
-			
-			totalSystemCost += sizeOfPath(BusCentralDatabase.getBusesInTheWorld().get(i).getPath());
-			
-		}
-		
-		HashMap BusesAndCosts = new HashMap<Bus, Integer>();
-		
-		for (int i = 0; i < BusesAndPotentialPaths.size(); i++){
-			
+
 			Bus bus = BusCentralDatabase.getBusesInTheWorld().get(i);
-			int newSystemCost = totalSystemCost - sizeOfPath(BusCentralDatabase.getBusesInTheWorld().get(i).getPath());
-			newSystemCost += sizeOfPath(BusesAndPotentialPaths.get(bus));
-			BusesAndCosts.put(bus, newSystemCost);
+
+			LinkedList<Vertex> path = (LinkedList<Vertex>) bus.getPath().clone();
+
+			int pathCost = 0;
 			
-		}
-		
-		int min = Collections.min(BusesAndCosts.values());
-		
-		
-		
-		Iterator it = BusesAndCosts.entrySet().iterator();
-		Bus bus = null;
-		while (it.hasNext()){
+			if (bus.getCostToNextStop() > 0){
+				path.remove(0);
+				pathCost = sizeOfPath(path);
+				pathCost += bus.getCostToNextStop();
+			}
+			else{
+				pathCost = sizeOfPath(path);
+			}
 			
-			Map.Entry<Bus, Integer> pairs = (Map.Entry<Bus, Integer>)it.next();
-			
-			if (pairs.getValue() == min){
+			if (pathCost > totalSystemCost){
 				
-				bus = pairs.getKey();
-				break;
+				totalSystemCost = pathCost;
 				
 			}
 			
 		}
 
+		HashMap BusesAndCosts = new HashMap<Bus, Integer>();
+
+		for (int i = 0; i < BusesAndPotentialPaths.size(); i++){
+
+			Bus bus = BusCentralDatabase.getBusesInTheWorld().get(i);
+			//int newSystemCost = totalSystemCost - sizeOfPath(BusCentralDatabase.getBusesInTheWorld().get(i).getPath());
+	//		int newSystemCost = sizeOfPath(BusCentralDatabase.getBusesInTheWorld().get(i).getPath());
+			int pathCost = sizeOfPath(BusesAndPotentialPaths.get(bus));
+			
+			if (bus.getCostToNextStop() > 0){
+				
+				LinkedList<Vertex> path = (LinkedList<Vertex>) BusesAndPotentialPaths.get(bus).clone();
+				path.remove(0);
+				pathCost = sizeOfPath(path);
+				pathCost += bus.getCostToNextStop();
+				
+			}
+			
+			BusesAndCosts.put(bus, pathCost);
+
+		}
+		
+		
+
+		int min = Collections.min(BusesAndCosts.values());
+
+
+
+		Iterator it = BusesAndCosts.entrySet().iterator();
+		Bus bus = null;
+		while (it.hasNext()){
+
+			Map.Entry<Bus, Integer> pairs = (Map.Entry<Bus, Integer>)it.next();
+
+			if (pairs.getValue() == min){
+
+				bus = pairs.getKey();
+				break;
+
+			}
+
+		}
+
 		bus.setPath(BusesAndPotentialPaths.get(bus));
-		
+
 		int numberOfPickups = BusCentralDatabase.getUnallocatedPassengers().size();
-		
+
 		for (int i = 0; i < numberOfPickups; i++){
 
 			bus.assignPassenger(BusCentralDatabase.getUnallocatedPassengers().get(0));
 
 		}
-		
-		System.out.println("TEST");
-		
+
+		//		System.out.println("TEST");
+
 	}
 
 	/**

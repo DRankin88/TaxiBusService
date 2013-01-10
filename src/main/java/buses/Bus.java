@@ -173,6 +173,7 @@ public class Bus {
 
 				passengersOnBus.add(passenger);
 				passenger.setPickedUp(true);
+				assignedPassengers.remove(passenger);
 
 			}
 		}

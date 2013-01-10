@@ -140,11 +140,11 @@ public class HamiltonPath {
 	public void display(int[]x){
 
 		
-			System.out.print(count+" : ");
+		//	System.out.print(count+" : ");
 		for(int i:x){
-					System.out.print(i+" ");
+				//	System.out.print(i+" ");
 		}
-			System.out.println();   
+		//	System.out.println();   
 			
 	}
 
