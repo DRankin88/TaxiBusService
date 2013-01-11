@@ -40,6 +40,7 @@ public class DynamicReroutingCostMinimization {
 			BusCentralDatabase.printStateOfWorld();
 
 		}
+		
 		if (BusCentralDatabase.getBusesInTheWorld().size() > 0){
 			// Firstly any bus that is at a stop in which a passenger could be dropped off should do so
 			dropOffPassengers();
