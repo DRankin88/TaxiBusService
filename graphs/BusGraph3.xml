@@ -16,25 +16,26 @@
 		<id>3</id>
 		<name>E</name>
 	</vertex>
-		<vertex>
+	<vertex>
 		<id>4</id>
 		<name>F</name>
 	</vertex>
-		<vertex>
+	<vertex>
 		<id>5</id>
 		<name>G</name>
 	</vertex>
-		<vertex>
+	<vertex>
 		<id>6</id>
 		<name>I</name>
 	</vertex>
-		<vertex>
+	<vertex>
 		<id>7</id>
 		<name>J</name>
 	</vertex>
 	<vertex>
 		<id>8</id>
 		<name>K</name>
+	</vertex>	
 	<!-- Edges for vertex B -->
 	<edge>
 		<id>0</id>
@@ -134,7 +135,7 @@
 	<edge>
 		<id>15</id>
 		<source>5</source>
-		<destination>6</destination>
+		<destination>3</destination>
 		<weight>5</weight>
 	</edge>
 	<!-- Edges for vertex I -->

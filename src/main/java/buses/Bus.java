@@ -137,6 +137,12 @@ public class Bus {
 		passengersOnBus.add(passenger);
 
 	}
+	
+	public String toString(){
+		
+		return name;
+		
+	}
 
 	public void dropOffPassengers(){
 
@@ -272,7 +278,7 @@ public class Bus {
 
 		assignedPassengers.add(pickup);
 		BusCentralDatabase.removePassengerFromUnallocated(pickup);
-
+System.out.println("dgarg");
 	}
 
 }

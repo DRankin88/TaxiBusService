@@ -25,16 +25,18 @@ import database.AllPairsShortestPath;
  */
 public class DynamicReroutingCostMinimization {
 
-	private static int count = -1;
+	private static int count = 0;
 	private Graph busGraph;
 	private AllPairsShortestPath allPairsShortestPath;
 
 	public void doAlgorithm(Graph busGraph, AllPairsShortestPath allPairsShortestPath){
 
+		TimeStepper.step();
+		
 		this.busGraph = busGraph;
 		this.allPairsShortestPath = allPairsShortestPath;
 
-		if(count < 120) {
+		if(count < 650) {
 			count++;
 			System.out.println("TimeStep " + count);
 			BusCentralDatabase.printStateOfWorld();
@@ -56,9 +58,6 @@ public class DynamicReroutingCostMinimization {
 			// Tell all the buses to move along their routes to the next location
 			incrimentBuses();
 		}
-
-		TimeStepper.step();
-
 	}
 
 	private void pickupPassengers(){
@@ -119,7 +118,7 @@ public class DynamicReroutingCostMinimization {
 			}
 
 			// Getting the list of pickups. These are the stops the will be part of the picking up of a passenger
-			ArrayList<Passenger> pickups = BusCentralDatabase.getUnallocatedPassengers();
+			ArrayList<Passenger> pickups = (ArrayList<Passenger>) BusCentralDatabase.getUnallocatedPassengers().clone();
 			pickups.addAll(firstBus.getAssignedPassengers());
 			ArrayList<Vertex> pickupStops = new ArrayList<Vertex>();
 

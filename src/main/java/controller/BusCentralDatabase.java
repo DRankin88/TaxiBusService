@@ -220,10 +220,16 @@ public class BusCentralDatabase {
 
 			}
 
-			if (!bus.getAssignedPassengerName().equals("No One")){
+			if (bus.getAssignedPassengers().size() > 0){
 
-				output.append(" and is assigned to pick up passenger " + bus.getAssignedPassengerName());
+				output.append(" and is assigned to pick up passengers " + bus.getAssignedPassengers().toString());
 
+			}
+			
+			if (bus.getPassengersOnBus().size() > 0){
+				
+				output.append(" and has passengers on bus " + bus.getPassengersOnBus().toString());
+				
 			}
 
 			System.out.println(output);

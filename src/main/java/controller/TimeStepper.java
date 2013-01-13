@@ -42,28 +42,33 @@ public class TimeStepper {
 		ArrayList<String[]> newPassengersToCreate = scenario.getPassengers(time);
 		ArrayList<String[]> newBusesToCreate = scenario.getBuses(time);
 
-		for (int i = 0; i < newPassengersToCreate.size(); i++){
-
-			String name = newPassengersToCreate.get(i)[2];
-			Vertex startingStop = graph.getVertex(newPassengersToCreate.get(i)[3]);
-			Vertex finishingStop = graph.getVertex(newPassengersToCreate.get(i)[4]);
+		while (!newPassengersToCreate.isEmpty()){
+			
+			String name = newPassengersToCreate.get(0)[2];
+			Vertex startingStop = graph.getVertex(newPassengersToCreate.get(0)[3]);
+			Vertex finishingStop = graph.getVertex(newPassengersToCreate.get(0)[4]);
 
 			Passenger passenger = new Passenger(name, startingStop, finishingStop);
 			BusCentralDatabase.addPassengerToWorld(passenger);
 			BusCentralDatabase.addPassengerToUnallocated(passenger);
 			BusCentralDatabase.addPassengerToWaiting(passenger);
+			scenario.removePassenger(newPassengersToCreate.get(0));
+			newPassengersToCreate.remove(newPassengersToCreate.get(0));
 
 		}
-
-		for (int i = 0; i < newBusesToCreate.size(); i++){
-
-			String name = newBusesToCreate.get(i)[2];
-			int capacity = Integer.parseInt(newBusesToCreate.get(i)[3]);
-			Vertex startingStop = graph.getVertex(newBusesToCreate.get(i)[4]);
+		
+		while (!newBusesToCreate.isEmpty()){
+			
+			String name = newBusesToCreate.get(0)[2];
+			int capacity = Integer.parseInt(newBusesToCreate.get(0)[3]);
+			Vertex startingStop = graph.getVertex(newBusesToCreate.get(0)[4]);
 
 			Bus bus = new Bus(name, capacity, startingStop, graph, paths);
 			BusCentralDatabase.addBusesToWorld(bus);
 			BusCentralDatabase.addBusToFreeBuses(bus);
+			scenario.removeBus(newBusesToCreate.get(0));
+			newBusesToCreate.remove(newBusesToCreate.get(0));
+			
 		}
 		
 		time++;

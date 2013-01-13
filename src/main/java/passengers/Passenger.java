@@ -71,6 +71,12 @@ public class Passenger {
 		
 	}
 	
+	public String toString(){
+		
+		return name;
+		
+	}
+	
 	
 	
 	

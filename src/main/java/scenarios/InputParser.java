@@ -19,8 +19,8 @@ public class InputParser {
 
 	private ArrayList<String[]> busesInWaiting = new ArrayList<String[]>();
 	private ArrayList<String[]> passengersInWaiting = new ArrayList<String[]>();
-	
-	
+
+
 	public InputParser(String input){
 
 		BufferedReader br = null;
@@ -33,20 +33,20 @@ public class InputParser {
 
 			while ((sCurrentLine = br.readLine()) != null) {
 
-				
+
 				if (sCurrentLine.startsWith("BUS")){
 
 					String[] splittedInput = sCurrentLine.split(" ");
-					
-			//		Bus bus = new Bus(name, capacity, startingStop);
+
+					//		Bus bus = new Bus(name, capacity, startingStop);
 					busesInWaiting.add(splittedInput);
 				}
 
 				if (sCurrentLine.startsWith("PASSENGER")){
-				
+
 					String[] splittedInput = sCurrentLine.split(" ");
-					
-			//		Passenger passenger = new Passenger(name, startingStop, destinationStop);
+
+					//		Passenger passenger = new Passenger(name, startingStop, destinationStop);
 					passengersInWaiting.add(splittedInput);
 				}
 
@@ -73,39 +73,53 @@ public class InputParser {
 	}
 
 	public ArrayList<String[]> getPassengers(int timeStep){
-		
+
 		ArrayList<String[]> passengers = new ArrayList<String[]>();
-		
+
 		for (int i = 0; i < passengersInWaiting.size(); i++){
-			
+
 			if (Integer.parseInt(passengersInWaiting.get(i)[1]) == timeStep){
-				
+
 				passengers.add(passengersInWaiting.get(i));
-				
+
 			}
-			
+
 		}
 
 		return passengers;
-		
+
 	}
-	
+
 	public ArrayList<String[]> getBuses(int timeStep){
-		
+
 		ArrayList<String[]> Buses = new ArrayList<String[]>();
-		
+
 		for (int i = 0; i < busesInWaiting.size(); i++){
-			
+
 			if (Integer.parseInt(busesInWaiting.get(i)[1]) == timeStep){
-				
+
 				Buses.add(busesInWaiting.get(i));
-				
+
 			}
-			
+
 		}
 
 		return Buses;
-		
+
 	}
-	
+
+	public void removePassenger(String[] passenger){
+
+		int index = passengersInWaiting.indexOf(passenger);
+		passengersInWaiting.remove(index);
+
+	}
+
+	public void removeBus(String[] bus){
+
+		int index = busesInWaiting.indexOf(bus);
+		busesInWaiting.remove(index);
+
+	}
+
 }
