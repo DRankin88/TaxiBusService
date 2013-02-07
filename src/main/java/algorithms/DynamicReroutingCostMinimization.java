@@ -95,9 +95,6 @@ public class DynamicReroutingCostMinimization {
 	// Sets the paths for all the buses.
 	private void dynamicReroutingAndPassengerAllocation(){
 
-		// For testing we deal with just the first bus
-		//Bus firstBus = BusCentralDatabase.getBusesInTheWorld().get(0);
-
 		HashMap<Bus, LinkedList<Vertex>> BusesAndPotentialPaths = new HashMap<Bus, LinkedList<Vertex>>();
 
 		/**

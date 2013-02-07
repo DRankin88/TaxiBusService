@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import passengers.Passenger;
@@ -46,7 +47,7 @@ public class NoReroutingAllowed {
 				if (assignIfRouteIsTrivial() == false){
 
 					// If it wasn't trivial then we have to do some more difficult appending
-
+					appendWorkToBestRoute();
 
 				}
 			}
@@ -83,9 +84,14 @@ public class NoReroutingAllowed {
 
 			// Now we have to find out if the bus could service the passenger on its current route 
 			// then keep a note of the cost of doing this
-			LinkedList<Vertex> busPath = thisBus.getPath();
-
-
+			LinkedList<Vertex> busPath = (LinkedList<Vertex>) thisBus.getPath().clone();
+			
+			// If the bus is between two stops then we need to remove the first vertex from its path
+			if (thisBus.getCostToNextStop() > 0){
+				
+				busPath.removeFirst();
+				
+			}
 
 			// Now get the pick up and the drop off for the passenger
 			Vertex pickUpStop = passenger.getStartingStop();
@@ -105,9 +111,19 @@ public class NoReroutingAllowed {
 			}
 
 			// Given that there exists a possible trivial assignation for this passenger we must record the path in some sort of map
-			LinkedList<Vertex> subPath = (LinkedList<Vertex>) busPath.clone();
+			LinkedList<Vertex> temp1 = (LinkedList<Vertex>) busPath.clone();
 
-			subPath = (LinkedList<Vertex>) subPath.subList(0, subPath.indexOf(dropOffStop));
+			List<Vertex> temp2 = temp1.subList(0, temp1.indexOf(dropOffStop) + 1);
+
+			LinkedList<Vertex> subPath = new LinkedList<Vertex>();
+
+			// Have to fill subpath with the values of path
+			for (int y = 0; y < temp2.size(); y++){
+
+				subPath.add(temp2.get(y));
+
+			}
+
 
 			int thisCost = sizeOfPath(subPath);
 
@@ -142,9 +158,100 @@ public class NoReroutingAllowed {
 
 			bestBus.assignPassenger(passenger);
 			return true;
+
 		}
+
 		// If we get to the end and no one was assigned the passenger then the method just returns false
 		return false;
+
+	}
+
+	/**
+	 * Having found that no bus is capable of dealing with the passenger trivially we must append the work to whomever is cheapest
+	 */
+	private void appendWorkToBestRoute(){
+
+		HashMap<Bus, LinkedList<Vertex>> busesAndPaths = new HashMap<Bus, LinkedList<Vertex>>();
+		int cheapestCost = Integer.MAX_VALUE;
+		Passenger passenger = BusCentralDatabase.getUnallocatedPassengers().get(0);
+
+		for (int i = 0; i < BusCentralDatabase.getBusesInTheWorld().size(); i++){
+
+			Bus thisBus = BusCentralDatabase.getBusesInTheWorld().get(i);
+			LinkedList<Vertex> busRoute = (LinkedList<Vertex>) thisBus.getPath().clone();
+
+			if (!busRoute.isEmpty()){
+
+				busRoute.addAll(allPairsShortestPath.getPath(busRoute.getLast().toString(), passenger.getStartingStop().toString()));
+				busRoute.addAll(allPairsShortestPath.getPath(passenger.getStartingStop().toString(), passenger.getDestinationStop().toString()));
+
+			}
+
+			else {
+
+				busRoute.addAll(allPairsShortestPath.getPath(thisBus.getCurrentStop().toString(), passenger.getStartingStop().toString()));
+				busRoute.addAll(allPairsShortestPath.getPath(passenger.getStartingStop().toString(), passenger.getDestinationStop().toString()));
+
+			}
+
+			// The busRoute will have some doubles that we need to get rid of
+			for (int j = 0; j < busRoute.size() - 1; j++){
+
+				if (busRoute.get(j).equals(busRoute.get(j + 1))){
+
+					busRoute.remove(j);
+
+				}
+			}
+
+			int cost = sizeOfPath(busRoute);
+
+			// If the bus is between two stops then the size of path needs to be slightly altered
+			if (thisBus.getCostToNextStop() > 0){
+
+				cost = cost - busGraph.getEdgeBetweenVertices(busRoute.get(0), busRoute.get(1)).getWeight();
+				cost += thisBus.getCostToNextStop();
+
+			}
+
+			busesAndPaths.put(thisBus, busRoute);
+
+			if (cost < cheapestCost){
+
+				cheapestCost = cost;
+
+			}
+
+
+		}
+
+		Bus bestBus = null;
+
+		// Having completed this operation we now need to assign the passenger to the bus that can do it with the lowest cost
+		Iterator it = busesAndPaths.entrySet().iterator();
+		while (it.hasNext()){
+
+			Map.Entry pairs = (Map.Entry)it.next();
+
+			int temp = sizeOfPath((LinkedList<Vertex>) pairs.getValue());
+
+			if (((Bus) pairs.getKey()).getCostToNextStop() > 0){
+
+				temp = temp - busGraph.getEdgeBetweenVertices(busesAndPaths.get((Bus) pairs.getKey()).get(0), busesAndPaths.get((Bus) pairs.getKey()).get(1)).getWeight();
+				temp += ((Bus) pairs.getKey()).getCostToNextStop();
+
+			}
+
+			if (temp == cheapestCost){
+
+				bestBus = (Bus)pairs.getKey();
+				break;
+			}
+		}
+
+		// Now that we know the bus we just need to assign the passenger to it.
+		bestBus.assignPassenger(passenger);
+		bestBus.setPath(busesAndPaths.get(bestBus));
 
 	}
 

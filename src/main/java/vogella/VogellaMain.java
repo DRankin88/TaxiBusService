@@ -4,6 +4,7 @@ import java.util.List;
 
 import algorithms.AssignClosestBus;
 import algorithms.DynamicReroutingCostMinimization;
+import algorithms.NoReroutingAllowed;
 
 import scenarios.InputParser;
 import utilities.Parser;
@@ -25,9 +26,10 @@ public class VogellaMain {
 		TimeStepper timeStepper = new TimeStepper(busGraph,scenario, allPairsShortestPath);
 		
 		DynamicReroutingCostMinimization dynAlgo = new DynamicReroutingCostMinimization();
+		NoReroutingAllowed noReAlgo = new NoReroutingAllowed();
 		
 		while (true){
-			dynAlgo.doAlgorithm(busGraph, allPairsShortestPath);
+			noReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
 		//	AssignClosestBus.doAlgorithm();
 		}
 	}
