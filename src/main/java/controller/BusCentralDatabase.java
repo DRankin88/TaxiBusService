@@ -1,6 +1,15 @@
 package controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 
 import passengers.Passenger;
 import vogella.Vertex;
@@ -21,6 +30,43 @@ public class BusCentralDatabase {
 	private static ArrayList<Passenger> passengersWaiting = new ArrayList<Passenger>();
 	private static ArrayList<Bus> busesInTheWorld = new ArrayList<Bus>();
 	private static ArrayList<Bus> freeBuses = new ArrayList<Bus>();
+	private static boolean allPassengersCreated = false;
+	private static int timeToComplete;
+	private static HashMap<Passenger, Object[]> passengerStats = new HashMap<Passenger, Object[]>();
+	private static HashMap<Bus, Object[]> busStats = new HashMap<Bus, Object[]>();
+	
+	
+	public static int getTimeToComplete() {
+		return timeToComplete;
+	}
+
+	public static void setTimeToComplete(int timeToComplete) {
+		BusCentralDatabase.timeToComplete = timeToComplete;
+	}
+
+	public static HashMap<Passenger, Object[]> getPassengerStats() {
+		return passengerStats;
+	}
+
+	public static void setPassengerStats(HashMap<Passenger, Object[]> passengerStats) {
+		BusCentralDatabase.passengerStats = passengerStats;
+	}
+
+	public static HashMap<Bus, Object[]> getBusStats() {
+		return busStats;
+	}
+
+	public static void setBusStats(HashMap<Bus, Object[]> busStats) {
+		BusCentralDatabase.busStats = busStats;
+	}
+
+	public static boolean isAllPassengersCreated() {
+		return allPassengersCreated;
+	}
+
+	public static void setAllPassengersCreated(boolean allPassengersCreated) {
+		BusCentralDatabase.allPassengersCreated = allPassengersCreated;
+	}
 
 	public static void addPassengerToWaiting(Passenger passenger){
 
@@ -189,10 +235,75 @@ public class BusCentralDatabase {
 	
 	public static void removePassengersFromTheWorld (ArrayList<Passenger> passengers){
 		
+		
+		
+		for (Passenger passenger : passengers){
+			
+			int time = passenger.getTotalTimeInWorld();
+			int timePickedUp = passenger.getWhenPickedUp() - passenger.getCreationTime() - 1;
+			int timeOnBus = time - timePickedUp;
+			String name = passenger.getName();
+			
+			Object[] information = new Object[] {name, time, timePickedUp, timeOnBus};
+			
+			passengerStats.put(passenger, information);
+			
+		}
+		
 		passengersInTheWorld.removeAll(passengers);
 		
+		// If this was the last ever dropOff then record the current timestep
+		if (allPassengersCreated == true && passengersInTheWorld.size() == 0){
+			
+			System.out.println("Algorithm Terminated on timeStep " + TimeStepper.getTime());
+			writeOutputToExcel();
+			System.exit(0);
+			
+		}
 	}
 
+	public static void writeOutputToExcel(){
+		
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		HSSFSheet sheet = workbook.createSheet("sample");
+		
+		Set<Passenger> keyset = passengerStats.keySet();
+		Row row = sheet.createRow(0);
+		Cell cell1 = row.createCell(1);
+		cell1.setCellValue("Time in System");
+		Cell cell2 = row.createCell(2);
+		cell2.setCellValue("Time waiting for pickup");
+		Cell cell3 = row.createCell(3);
+		cell3.setCellValue("Time on Bus");
+		int rownum = 1;
+		for (Passenger passenger : keyset){
+			
+			row = sheet.createRow(rownum++);
+			Object[] objArr = passengerStats.get(passenger);
+			int cellnum = 0;
+			for (Object obj : objArr){
+				Cell cell = row.createCell(cellnum++);
+				if(obj instanceof Integer){
+					cell.setCellValue((Integer)obj);
+				}
+				if(obj instanceof String){
+					cell.setCellValue((String)obj);
+				}
+			}
+			
+		}
+		
+		try {
+			FileOutputStream out = new FileOutputStream(new File("C:\\Users\\David Rankin\\Dropbox\\University\\Honours Project\\DATA\\new.xls"));
+			workbook.write(out);
+			out.close();
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public static void printStateOfWorld(){
 
 		//Print the location of all buses and who they are assigned to and where they are going

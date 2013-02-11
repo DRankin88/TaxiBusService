@@ -28,6 +28,7 @@ public class Bus {
 	private String assignedPassengerName;
 	private AllPairsShortestPath myPath;
 	private ArrayList<Passenger> assignedPassengers = new ArrayList<Passenger>();
+	private int distanceTravelled = 0;
 
 	public Bus(String name, int capacity, Vertex currentStop, Graph graph, AllPairsShortestPath myPath) {
 
@@ -165,7 +166,7 @@ public class Bus {
 		
 	}
 
-	public void pickupPassengers(){
+	public void pickupPassengers(int time){
 
 		ArrayList<Passenger> pickups = BusCentralDatabase.getPassengersAtMyStop(currentStop);
 		int numberOfPickups = pickups.size();
@@ -179,6 +180,7 @@ public class Bus {
 
 				passengersOnBus.add(passenger);
 				passenger.setPickedUp(true);
+				passenger.setWhenPickedUp(time);
 				assignedPassengers.remove(passenger);
 
 			}
@@ -232,6 +234,13 @@ public class Bus {
 	 */
 	public void moveAlongPath(){
 
+		if (!path.isEmpty()){
+			
+			distanceTravelled++;
+//			System.out.println("distance travelled " + name + " " + distanceTravelled);
+			
+		}
+		
 		if (costToNextStop != 0){
 			// We must be traversing an edge between stops
 
@@ -278,7 +287,7 @@ public class Bus {
 
 		assignedPassengers.add(pickup);
 		BusCentralDatabase.removePassengerFromUnallocated(pickup);
-System.out.println("dgarg");
+
 	}
 
 }

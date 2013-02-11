@@ -29,7 +29,8 @@ public class VogellaMain {
 		NoReroutingAllowed noReAlgo = new NoReroutingAllowed();
 		
 		while (true){
-			noReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
+		//	noReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
+			dynAlgo.doAlgorithm(busGraph, allPairsShortestPath);
 		//	AssignClosestBus.doAlgorithm();
 		}
 	}

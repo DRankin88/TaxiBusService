@@ -23,6 +23,10 @@ public class TimeStepper {
 	private static InputParser scenario;
 	private static int time = 1;
 	private static AllPairsShortestPath paths;
+	
+	public static int getTime() {
+		return time;
+	}
 
 	public TimeStepper (Graph graph, InputParser scenario, AllPairsShortestPath paths) {
 
@@ -37,7 +41,7 @@ public class TimeStepper {
 	 */
 	public static void step(){
 
-		
+//		System.out.println("Total Number of passengers left to create: " + scenario.getPassengersInWaiting().size());
 
 		ArrayList<String[]> newPassengersToCreate = scenario.getPassengers(time);
 		ArrayList<String[]> newBusesToCreate = scenario.getBuses(time);
@@ -49,12 +53,19 @@ public class TimeStepper {
 			Vertex finishingStop = graph.getVertex(newPassengersToCreate.get(0)[4]);
 
 			Passenger passenger = new Passenger(name, startingStop, finishingStop);
+			passenger.setCreationTime(time);
 			BusCentralDatabase.addPassengerToWorld(passenger);
 			BusCentralDatabase.addPassengerToUnallocated(passenger);
 			BusCentralDatabase.addPassengerToWaiting(passenger);
 			scenario.removePassenger(newPassengersToCreate.get(0));
 			newPassengersToCreate.remove(newPassengersToCreate.get(0));
-
+			
+			if (scenario.getPassengersInWaiting().size() == 0){
+				
+				BusCentralDatabase.setAllPassengersCreated(true);
+				
+			}
+			
 		}
 		
 		while (!newBusesToCreate.isEmpty()){
@@ -68,6 +79,13 @@ public class TimeStepper {
 			BusCentralDatabase.addBusToFreeBuses(bus);
 			scenario.removeBus(newBusesToCreate.get(0));
 			newBusesToCreate.remove(newBusesToCreate.get(0));
+			
+		}
+		
+		for (Passenger passenger : BusCentralDatabase.getPassengerInTheWorld()){
+			
+			passenger.incrimentTimeInWorld();
+			System.out.println("TotalTimeInWorld for passenger " + passenger.getName().toString() + " is " + passenger.getTotalTimeInWorld());
 			
 		}
 		

@@ -32,17 +32,17 @@ public class DynamicReroutingCostMinimization {
 	public void doAlgorithm(Graph busGraph, AllPairsShortestPath allPairsShortestPath){
 
 		TimeStepper.step();
-		
+
 		this.busGraph = busGraph;
 		this.allPairsShortestPath = allPairsShortestPath;
 
-		if(count < 650) {
+		if(count < 500) {
 			count++;
 			System.out.println("TimeStep " + count);
 			BusCentralDatabase.printStateOfWorld();
 
 		}
-		
+
 		if (BusCentralDatabase.getBusesInTheWorld().size() > 0){
 			// Firstly any bus that is at a stop in which a passenger could be dropped off should do so
 			dropOffPassengers();
@@ -70,7 +70,7 @@ public class DynamicReroutingCostMinimization {
 
 			if (bus.getCostToNextStop() == 0){
 
-				bus.pickupPassengers();
+				bus.pickupPassengers(TimeStepper.getTime());
 
 			}	
 		}		
@@ -203,7 +203,7 @@ public class DynamicReroutingCostMinimization {
 			LinkedList<Vertex> path = (LinkedList<Vertex>) bus.getPath().clone();
 
 			int pathCost = 0;
-			
+
 			if (bus.getCostToNextStop() > 0){
 				path.remove(0);
 				pathCost = sizeOfPath(path);
@@ -212,13 +212,12 @@ public class DynamicReroutingCostMinimization {
 			else{
 				pathCost = sizeOfPath(path);
 			}
-			
+
 			if (pathCost > totalSystemCost){
-				
+
 				totalSystemCost = pathCost;
-				
-			}
-			
+
+			}			
 		}
 
 		HashMap BusesAndCosts = new HashMap<Bus, Integer>();
@@ -226,24 +225,22 @@ public class DynamicReroutingCostMinimization {
 		for (int i = 0; i < BusesAndPotentialPaths.size(); i++){
 
 			Bus bus = BusCentralDatabase.getBusesInTheWorld().get(i);
-			//int newSystemCost = totalSystemCost - sizeOfPath(BusCentralDatabase.getBusesInTheWorld().get(i).getPath());
-	//		int newSystemCost = sizeOfPath(BusCentralDatabase.getBusesInTheWorld().get(i).getPath());
 			int pathCost = sizeOfPath(BusesAndPotentialPaths.get(bus));
-			
+
 			if (bus.getCostToNextStop() > 0){
-				
+
 				LinkedList<Vertex> path = (LinkedList<Vertex>) BusesAndPotentialPaths.get(bus).clone();
 				path.remove(0);
 				pathCost = sizeOfPath(path);
 				pathCost += bus.getCostToNextStop();
-				
+
 			}
-			
+
 			BusesAndCosts.put(bus, pathCost);
 
 		}
-		
-		
+
+
 
 		int min = Collections.min(BusesAndCosts.values());
 

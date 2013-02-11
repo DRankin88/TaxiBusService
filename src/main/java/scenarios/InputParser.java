@@ -20,6 +20,13 @@ public class InputParser {
 	private ArrayList<String[]> busesInWaiting = new ArrayList<String[]>();
 	private ArrayList<String[]> passengersInWaiting = new ArrayList<String[]>();
 
+	public ArrayList<String[]> getBusesInWaiting() {
+		return busesInWaiting;
+	}
+
+	public ArrayList<String[]> getPassengersInWaiting() {
+		return passengersInWaiting;
+	}
 
 	public InputParser(String input){
 

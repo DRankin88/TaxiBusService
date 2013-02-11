@@ -28,7 +28,7 @@ public class NoReroutingAllowed {
 		this.busGraph = busGraph;
 		this.allPairsShortestPath = allPairsShortestPath;
 
-		if(count < 650) {
+		if(count < 500) {
 
 			count++;
 			System.out.println("TimeStep " + count);
@@ -308,7 +308,7 @@ public class NoReroutingAllowed {
 
 			if (bus.getCostToNextStop() == 0){
 
-				bus.pickupPassengers();
+				bus.pickupPassengers(TimeStepper.getTime());
 
 			}	
 		}		

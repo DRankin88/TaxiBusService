@@ -12,12 +12,26 @@ public class Passenger {
 	private String name;
 	private Vertex startingStop;
 	private Vertex destinationStop;
-	private int totalTimeOnBus;
+	private int totalTimeInWorld = -1;
 	private boolean droppedOff;
 	private boolean pickedUp;
+	private int whenPickedUp;
+	private int creationTime;
 	
-	public void setTotalTimeOnBus(int totalTimeOnBus) {
-		this.totalTimeOnBus = totalTimeOnBus;
+	public int getCreationTime() {
+		return creationTime;
+	}
+	public void setCreationTime(int creationTime) {
+		this.creationTime = creationTime;
+	}
+	public int getWhenPickedUp() {
+		return whenPickedUp;
+	}
+	public void setWhenPickedUp(int whenPickedUp) {
+		this.whenPickedUp = whenPickedUp;
+	}
+	public void incrimentTimeInWorld(){
+		totalTimeInWorld++;	
 	}
 
 	public void setPickedUp(boolean pickedUp) {
@@ -36,30 +50,21 @@ public class Passenger {
 		return name;
 	}
 
-
-
 	public Vertex getStartingStop() {
 		return startingStop;
 	}
-
-
 
 	public Vertex getDestinationStop() {
 		return destinationStop;
 	}
 
-
-
-	public int getTotalTimeOnBus() {
-		return totalTimeOnBus;
+	public int getTotalTimeInWorld() {
+		return totalTimeInWorld;
 	}
-
-
 
 	public void setDroppedOff(boolean droppedOff) {
 		this.droppedOff = droppedOff;
 	}
-
 
 	public Passenger (String name, Vertex startingStop, Vertex destinationStop){
 		
@@ -75,10 +80,5 @@ public class Passenger {
 		
 		return name;
 		
-	}
-	
-	
-	
-	
-	
+	}	
 }
