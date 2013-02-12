@@ -85,7 +85,7 @@ public class TimeStepper {
 		for (Passenger passenger : BusCentralDatabase.getPassengerInTheWorld()){
 			
 			passenger.incrimentTimeInWorld();
-			System.out.println("TotalTimeInWorld for passenger " + passenger.getName().toString() + " is " + passenger.getTotalTimeInWorld());
+	//		System.out.println("TotalTimeInWorld for passenger " + passenger.getName().toString() + " is " + passenger.getTotalTimeInWorld());
 			
 		}
 		

@@ -44,31 +44,33 @@ public class NoReroutingAllowed {
 			// If there are unallocated passengers then we may need to change the paths that buses are currently moving along
 			if (BusCentralDatabase.getUnallocatedPassengers().size() > 0){
 
-				if (assignIfRouteIsTrivial() == false){
+				Object[] trivialCost = assignIfRouteIsTrivial();
 
-					// If it wasn't trivial then we have to do some more difficult appending
-					appendWorkToBestRoute();
+				// If it wasn't trivial then we have to do some more difficult appending
+				appendWorkToBestRoute(trivialCost);
 
-				}
 			}
-
-			// Pick up passenger if bus is at destination
-			pickupPassengers();
-
-			// Tell all the buses to move along their routes to the next location
-			incrimentBuses();
-
 		}
+
+		// Pick up passenger if bus is at destination
+		pickupPassengers();
+
+		// Tell all the buses to move along their routes to the next location
+		incrimentBuses();
+
 	}
+
 
 	/**
 	 * This has to loop over all of the buses and see if it would be trivial to assign the passenger to that bus. 
 	 * @return
 	 */
-	private boolean assignIfRouteIsTrivial(){
+	private Object[] assignIfRouteIsTrivial(){
 
 		// Use this to place the bus and it's candidate path
 		HashMap<Bus, Integer> busesAndCosts = new HashMap<Bus, Integer>();
+		
+		Bus bestBus = null;
 
 		// Used to store the lowest cost bus
 		int cost = Integer.MAX_VALUE;
@@ -85,12 +87,12 @@ public class NoReroutingAllowed {
 			// Now we have to find out if the bus could service the passenger on its current route 
 			// then keep a note of the cost of doing this
 			LinkedList<Vertex> busPath = (LinkedList<Vertex>) thisBus.getPath().clone();
-			
+
 			// If the bus is between two stops then we need to remove the first vertex from its path
 			if (thisBus.getCostToNextStop() > 0){
-				
+
 				busPath.removeFirst();
-				
+
 			}
 
 			// Now get the pick up and the drop off for the passenger
@@ -117,6 +119,7 @@ public class NoReroutingAllowed {
 
 			LinkedList<Vertex> subPath = new LinkedList<Vertex>();
 
+			// Subpath needs to take into account the 
 			// Have to fill subpath with the values of path
 			for (int y = 0; y < temp2.size(); y++){
 
@@ -125,8 +128,8 @@ public class NoReroutingAllowed {
 			}
 
 
-			int thisCost = sizeOfPath(subPath);
-
+			int thisCost = sizeOfPath(subPath) + thisBus.getCostToNextStop();
+			
 			if (thisCost < cost){
 
 				cost = thisCost;
@@ -139,7 +142,7 @@ public class NoReroutingAllowed {
 
 		if (busesAndCosts.size() > 0) {
 
-			Bus bestBus = null;
+
 
 			// Having completed this operation we now need to assign the passenger to the bus that can do it with the lowest cost
 			Iterator it = busesAndCosts.entrySet().iterator();
@@ -156,20 +159,28 @@ public class NoReroutingAllowed {
 
 			// Now that we know the bus we just need to assign the passenger to it.
 
-			bestBus.assignPassenger(passenger);
-			return true;
+			//	bestBus.assignPassenger(passenger);
 
 		}
 
-		// If we get to the end and no one was assigned the passenger then the method just returns false
-		return false;
+		if (busesAndCosts.size() > 0){
+			
+			Object[] busAndCost = new Object[] {bestBus, busesAndCosts.get(bestBus)};
+			return busAndCost;
+			
+		}
+		else{
 
+			Object[] Onlycost = new Object[] {Integer.MAX_VALUE};
+			return Onlycost;
+
+		}
 	}
 
 	/**
 	 * Having found that no bus is capable of dealing with the passenger trivially we must append the work to whomever is cheapest
 	 */
-	private void appendWorkToBestRoute(){
+	private void appendWorkToBestRoute(Object[] input){
 
 		HashMap<Bus, LinkedList<Vertex>> busesAndPaths = new HashMap<Bus, LinkedList<Vertex>>();
 		int cheapestCost = Integer.MAX_VALUE;
@@ -250,8 +261,29 @@ public class NoReroutingAllowed {
 		}
 
 		// Now that we know the bus we just need to assign the passenger to it.
-		bestBus.assignPassenger(passenger);
-		bestBus.setPath(busesAndPaths.get(bestBus));
+
+		if (input.length < 2){
+			
+			bestBus.assignPassenger(passenger);
+			bestBus.setPath(busesAndPaths.get(bestBus));
+			return;			
+			
+		}
+		if ((Integer)input[1] <= cheapestCost){
+			// Then it is better to do the trivial assignation
+
+			Bus bus = (Bus)input[0];
+			bus.assignPassenger(passenger);
+
+		}
+		else{
+			
+			bestBus.assignPassenger(passenger);
+			bestBus.setPath(busesAndPaths.get(bestBus));
+			return;
+
+		}
+
 
 	}
 

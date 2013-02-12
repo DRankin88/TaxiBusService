@@ -294,9 +294,10 @@ public class BusCentralDatabase {
 		}
 		
 		try {
-			FileOutputStream out = new FileOutputStream(new File("C:\\Users\\David Rankin\\Dropbox\\University\\Honours Project\\DATA\\new.xls"));
+			FileOutputStream out = new FileOutputStream(new File("C:\\Users\\David Rankin\\Dropbox\\University\\Honours Project\\DATA\\newNo.xls"));
 			workbook.write(out);
 			out.close();
+			System.out.println("Output Written to Excel");
 		}
 		catch(Exception e){
 			e.printStackTrace();
