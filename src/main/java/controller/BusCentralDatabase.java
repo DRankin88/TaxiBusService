@@ -34,8 +34,8 @@ public class BusCentralDatabase {
 	private static int timeToComplete;
 	private static HashMap<Passenger, Object[]> passengerStats = new HashMap<Passenger, Object[]>();
 	private static HashMap<Bus, Object[]> busStats = new HashMap<Bus, Object[]>();
-	
-	
+
+
 	public static int getTimeToComplete() {
 		return timeToComplete;
 	}
@@ -232,41 +232,56 @@ public class BusCentralDatabase {
 		return null;
 
 	}
-	
+
 	public static void removePassengersFromTheWorld (ArrayList<Passenger> passengers){
-		
-		
-		
+
+
+
 		for (Passenger passenger : passengers){
-			
+
 			int time = passenger.getTotalTimeInWorld();
 			int timePickedUp = passenger.getWhenPickedUp() - passenger.getCreationTime() - 1;
 			int timeOnBus = time - timePickedUp;
 			String name = passenger.getName();
-			
+
 			Object[] information = new Object[] {name, time, timePickedUp, timeOnBus};
-			
+
 			passengerStats.put(passenger, information);
-			
+
 		}
-		
+
 		passengersInTheWorld.removeAll(passengers);
-		
+
 		// If this was the last ever dropOff then record the current timestep
 		if (allPassengersCreated == true && passengersInTheWorld.size() == 0){
-			
+
 			System.out.println("Algorithm Terminated on timeStep " + TimeStepper.getTime());
 			writeOutputToExcel();
 			System.exit(0);
-			
+
+		}
+	}
+
+	public static void collectBusData(){
+
+		for (Bus bus : busesInTheWorld){
+
+			int distanceTravelled = bus.getDistanceTravelled();
+			String busName = bus.getName();
+			Object[] stats = {busName, distanceTravelled};
+
+			busStats.put(bus, stats);
+
 		}
 	}
 
 	public static void writeOutputToExcel(){
+
+		collectBusData();
 		
 		HSSFWorkbook workbook = new HSSFWorkbook();
 		HSSFSheet sheet = workbook.createSheet("sample");
-		
+
 		Set<Passenger> keyset = passengerStats.keySet();
 		Row row = sheet.createRow(0);
 		Cell cell1 = row.createCell(1);
@@ -277,7 +292,7 @@ public class BusCentralDatabase {
 		cell3.setCellValue("Time on Bus");
 		int rownum = 1;
 		for (Passenger passenger : keyset){
-			
+
 			row = sheet.createRow(rownum++);
 			Object[] objArr = passengerStats.get(passenger);
 			int cellnum = 0;
@@ -290,11 +305,32 @@ public class BusCentralDatabase {
 					cell.setCellValue((String)obj);
 				}
 			}
-			
 		}
 		
+		row = sheet.createRow(rownum++);
+		Cell cell4 = row.createCell(1);
+		cell4.setCellValue("Distance Travelled");
+		
+		Set<Bus> busset = busStats.keySet();
+		
+		for (Bus bus : busset){
+
+			row = sheet.createRow(rownum++);
+			Object[] objArr = busStats.get(bus);
+			int cellnum = 0;
+			for (Object obj : objArr){
+				Cell cell = row.createCell(cellnum++);
+				if(obj instanceof Integer){
+					cell.setCellValue((Integer)obj);
+				}
+				if(obj instanceof String){
+					cell.setCellValue((String)obj);
+				}
+			}
+		}
+			
 		try {
-			FileOutputStream out = new FileOutputStream(new File("C:\\Users\\David Rankin\\Dropbox\\University\\Honours Project\\DATA\\newNo.xls"));
+			FileOutputStream out = new FileOutputStream(new File("C:\\Users\\David Rankin\\Dropbox\\University\\Honours Project\\DATA\\new.xls"));
 			workbook.write(out);
 			out.close();
 			System.out.println("Output Written to Excel");
@@ -302,9 +338,9 @@ public class BusCentralDatabase {
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	public static void printStateOfWorld(){
 
 		//Print the location of all buses and who they are assigned to and where they are going
@@ -337,11 +373,11 @@ public class BusCentralDatabase {
 				output.append(" and is assigned to pick up passengers " + bus.getAssignedPassengers().toString());
 
 			}
-			
+
 			if (bus.getPassengersOnBus().size() > 0){
-				
+
 				output.append(" and has passengers on bus " + bus.getPassengersOnBus().toString());
-				
+
 			}
 
 			System.out.println(output);

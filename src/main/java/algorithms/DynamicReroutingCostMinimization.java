@@ -172,23 +172,9 @@ public class DynamicReroutingCostMinimization {
 				path.add(firstBus.getCurrentStop());
 				path.addAll(optimalPath);
 				optimalPath = path;
-				//		firstBus.setPath(path);
+
 
 			}
-
-			else {
-
-				//		firstBus.setPath(optimalPath);
-
-			}
-
-
-			/*
-			for (int i = 0; i < numberOfPickups; i++){
-
-				firstBus.assignPassenger(pickups.get(0));
-
-			}*/
 
 			BusesAndPotentialPaths.put(firstBus, optimalPath);
 

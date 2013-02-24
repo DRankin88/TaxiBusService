@@ -46,6 +46,13 @@ public class Bus {
 		this.assignedPassengerName = assignedPassengerName;
 	}
 
+	public void incrimentDistanceTravelled(){
+		distanceTravelled++;
+	}
+	public int getDistanceTravelled() {
+		return distanceTravelled;
+	}
+
 	public ArrayList<Passenger> getAssignedPassengers() {
 		return assignedPassengers;
 	}
