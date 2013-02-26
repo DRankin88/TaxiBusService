@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Row;
 
 import passengers.Passenger;
 import vogella.Vertex;
+import vogella.VogellaMain;
 import buses.Bus;
 
 /**
@@ -330,7 +331,7 @@ public class BusCentralDatabase {
 		}
 			
 		try {
-			FileOutputStream out = new FileOutputStream(new File("C:\\Users\\David Rankin\\Dropbox\\University\\Honours Project\\DATA\\new.xls"));
+			FileOutputStream out = new FileOutputStream(new File(VogellaMain.outputFile));
 			workbook.write(out);
 			out.close();
 			System.out.println("Output Written to Excel");

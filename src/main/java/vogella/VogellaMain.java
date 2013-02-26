@@ -4,6 +4,7 @@ import java.util.List;
 
 import algorithms.AssignClosestBus;
 import algorithms.DynamicReroutingCostMinimization;
+import algorithms.MinimalRerouting;
 import algorithms.NoReroutingAllowed;
 
 import scenarios.InputParser;
@@ -15,6 +16,7 @@ public class VogellaMain {
 
 	private static List<Vertex> nodes;
 	private static List<Edge> edges;
+	public static String outputFile;
 
 	public static void main(String[] args) throws Exception {
 
@@ -24,14 +26,18 @@ public class VogellaMain {
 
 		InputParser scenario = new InputParser(args[1]);
 		TimeStepper timeStepper = new TimeStepper(busGraph,scenario, allPairsShortestPath);
-		
+
+		outputFile = args[2];
+
 		DynamicReroutingCostMinimization dynAlgo = new DynamicReroutingCostMinimization();
 		NoReroutingAllowed noReAlgo = new NoReroutingAllowed();
-		
+		MinimalRerouting minReAlgo = new MinimalRerouting();
+
 		while (true){
-		//	noReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
-			dynAlgo.doAlgorithm(busGraph, allPairsShortestPath);
-		//	AssignClosestBus.doAlgorithm();
+			//	noReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
+			//	dynAlgo.doAlgorithm(busGraph, allPairsShortestPath);
+			minReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
+			//	AssignClosestBus.doAlgorithm();
 		}
 	}
 

@@ -226,11 +226,7 @@ public class DynamicReroutingCostMinimization {
 
 		}
 
-
-
 		int min = Collections.min(BusesAndCosts.values());
-
-
 
 		Iterator it = BusesAndCosts.entrySet().iterator();
 		Bus bus = null;
