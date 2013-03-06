@@ -60,10 +60,12 @@ public class MinimalRerouting extends BaseAlgorithmBehaviour {
 
 		for (Bus bus : BusCentralDatabase.getBusesInTheWorld()){
 
-			LinkedList<Vertex> path = (LinkedList<Vertex>) bus.getPath().clone();
-			int vertexCount = path.size();
+
+			int vertexCount = bus.getPath().size();
 
 			if(vertexCount == 0){ // The bus is currently idle
+
+				LinkedList<Vertex> path = (LinkedList<Vertex>) bus.getPath().clone();
 
 				LinkedList<Vertex> pathOut = (LinkedList<Vertex>) (allPairsShortestPath.getPath(bus.getCurrentStop().getName(), passenger.getStartingStop().getName())).clone();
 				LinkedList<Vertex> pathBack = (LinkedList<Vertex>) (allPairsShortestPath.getPath(passenger.getStartingStop().getName(), passenger.getDestinationStop().getName())).clone();
@@ -90,14 +92,33 @@ public class MinimalRerouting extends BaseAlgorithmBehaviour {
 
 				ArrayList<LinkedList<Vertex>> candidatePaths = new ArrayList<LinkedList<Vertex>>();
 
-				for (int i = 0; i < vertexCount; i++) {
+				int startPoint = 0;
+				if (bus.getCostToNextStop() != 0){
+					startPoint = 1;
+				}
+
+				for (int i = startPoint; i < vertexCount; i++) {
+
+					LinkedList<Vertex> path = (LinkedList<Vertex>) bus.getPath().clone();
 
 					Vertex vertex = path.get(i);
 					LinkedList<Vertex> pathOut = (LinkedList<Vertex>) (allPairsShortestPath.getPath(vertex.getName(), passenger.getStartingStop().getName())).clone();
-					LinkedList<Vertex> pathBack = (LinkedList<Vertex>) (allPairsShortestPath.getPath(passenger.getStartingStop().getName(), path.get(i+1).getName())).clone();
-					pathOut.addAll(pathBack);
-					path.addAll(i+1, pathOut);
+					//			path.addAll(i,pathOut);
+					// If we are at the end of the route then there is no need to add the notion of a path back
+					if (i != (path.size() - 1)){
 
+						if (!pathOut.isEmpty()){
+							LinkedList<Vertex> pathBack = (LinkedList<Vertex>) (allPairsShortestPath.getPath(passenger.getStartingStop().getName(), path.get(i+1).getName())).clone();
+							pathOut.addAll(pathBack);
+						}
+						path.addAll(i+1, pathOut);
+
+					}
+					else{
+
+						path.addAll(i,pathOut);
+
+					}
 					// Need to remove any potential side by side duplicates
 					for (int j = 0; j < path.size() - 1; j++){
 
@@ -112,16 +133,20 @@ public class MinimalRerouting extends BaseAlgorithmBehaviour {
 					}
 
 					// Now we have added the pickup at this index and have a new path. 
-					// From the pickup point we need to find the best place to do the dropoff
+					// From the pickup point we need to find the best place to do the drop off
 
 					int indexOfPickup = path.indexOf(passenger.getStartingStop());
+					if (indexOfPickup < i){
+						indexOfPickup = path.lastIndexOf(passenger.getStartingStop());
+					}
+
 					ArrayList<LinkedList<Vertex>> potentialFromThisPickup = new ArrayList<LinkedList<Vertex>>();
 
 					for (int k = indexOfPickup; k < path.size(); k++){
 
 						LinkedList<Vertex> newPath = (LinkedList<Vertex>) path.clone();
 
-						LinkedList<Vertex> pathToDrop =  (LinkedList<Vertex>) (allPairsShortestPath.getPath(path.get(indexOfPickup).getName(), passenger.getDestinationStop().getName())).clone();
+						LinkedList<Vertex> pathToDrop =  (LinkedList<Vertex>) (allPairsShortestPath.getPath(newPath.get(k).getName(), passenger.getDestinationStop().getName())).clone();
 						newPath.addAll(k, pathToDrop);
 
 						// Delete duplicates
@@ -137,11 +162,26 @@ public class MinimalRerouting extends BaseAlgorithmBehaviour {
 							}
 						}
 
+
+					// Now make sure that the route is not doing more work than needed
+					// Get the last index of the last dropoff and remove everything after
+					ArrayList<Passenger> allPassengers = (ArrayList<Passenger>) bus.getAssignedPassengers().clone();
+					allPassengers.add(passenger);
+					allPassengers.addAll(bus.getPassengersOnBus());
+					int last = getIndexOfLastDropOff(allPassengers, newPath);
+					for (int w = last + 1; w < newPath.size(); w++){
+						
+						newPath.remove(w);
+						
+					}
+					
 						// Now store this path
 						potentialFromThisPickup.add(newPath);
+
 					}
 
-					LinkedList<Vertex> shortestPathFromThisStart = shortestPath(potentialFromThisPickup); 
+					LinkedList<Vertex> shortestPathFromThisStart = shortestPath(potentialFromThisPickup);
+
 					candidatePaths.add(shortestPathFromThisStart);
 
 				}
@@ -161,6 +201,31 @@ public class MinimalRerouting extends BaseAlgorithmBehaviour {
 
 	}
 
+	private int getIndexOfLastDropOff(ArrayList<Passenger> passengers, LinkedList<Vertex> path){
+
+		ArrayList<Vertex> lastStops = new ArrayList<Vertex>();
+		for (Passenger passenger : passengers){
+			
+			lastStops.add(passenger.getDestinationStop());
+			
+		}
+		
+		int lastIndex = path.lastIndexOf(lastStops.get(0));
+
+		for (int i = 1; i < lastStops.size(); i++){
+			
+			if (path.lastIndexOf(lastStops.get(i)) > lastIndex){
+				
+				lastIndex = path.lastIndexOf(lastStops.get(i));
+				
+			}
+			
+		}
+		
+		return lastIndex;
+		
+	}
+
 	private Bus bestBus (HashMap<Bus, LinkedList<Vertex>> busesAndPaths){
 
 		Iterator it = busesAndPaths.entrySet().iterator();
@@ -174,6 +239,7 @@ public class MinimalRerouting extends BaseAlgorithmBehaviour {
 
 			if (pathCost < cost){
 				bestBus = (Bus) pairs.getKey();
+				cost = pathCost;
 			}
 		}
 

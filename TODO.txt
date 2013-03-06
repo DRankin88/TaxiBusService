@@ -1,0 +1,6 @@
+For Thursday:
+
+1) Fix bug in best insertion algorithm. (Look at timestep 8. The long path has a final D that exists for no reason)
+2) Create many more scenarios for the current map
+3) Devise some sort of preliminary cost function
+4) Add in the currently travelled path to the cost of the path

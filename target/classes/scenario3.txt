@@ -1,8 +1,6 @@
 BUS 1 John 5 C
 BUS 3 John2 5 B
 BUS 5 John3 5 F
-BUS 7 John4 5 K
-BUS 11 John5 5 G
 BUS 15 John6 5 J
 PASSENGER 3 Daisy C D
 PASSENGER 4 Daisy2 K D

@@ -392,13 +392,13 @@ public class BusCentralDatabase {
 
 			if (!passenger.isPickedUp()){
 
-				System.out.println("Passenger named " + passenger.getName() + " is currently waiting to be picked up from stop " + passenger.getStartingStop());
+				System.out.println("Passenger named " + passenger.getName() + " " + passenger.getStartingStop().getName() + passenger.getDestinationStop().getName() + " is currently waiting to be picked up from stop " + passenger.getStartingStop());
 
 			}
 
 			if (passenger.isPickedUp() && !passenger.isDroppedOff()){
 
-				System.out.println("Passenger named " + passenger.getName() + " is currently on bus named " + getBusFromPassenger(passenger).getName());
+				System.out.println("Passenger named " + passenger.getName() + " " + passenger.getStartingStop().getName() + passenger.getDestinationStop().getName() + " is currently on bus named " + getBusFromPassenger(passenger).getName());
 
 			}
 
