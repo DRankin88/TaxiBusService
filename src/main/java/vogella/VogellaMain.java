@@ -35,8 +35,8 @@ public class VogellaMain {
 
 		while (true){
 			//	noReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
-			//	dynAlgo.doAlgorithm(busGraph, allPairsShortestPath);
-			  minReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
+				dynAlgo.doAlgorithm(busGraph, allPairsShortestPath);
+			//  minReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
 			//	AssignClosestBus.doAlgorithm();
 		}
 	}
