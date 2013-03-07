@@ -309,6 +309,18 @@ public class BusCentralDatabase {
 		}
 		
 		row = sheet.createRow(rownum++);
+		//For entering averages
+		Cell averages = row.createCell(0);
+		Cell tis = row.createCell(1);
+		Cell tw = row.createCell(2);
+		Cell tob= row.createCell(3);
+		averages.setCellValue("Averages");
+		tis.setCellFormula("AVERAGE(B2:B" + Integer.toString(rownum - 1) + ")");
+		tw.setCellFormula("AVERAGE(C2:C" + Integer.toString(rownum - 1) + ")");
+		tob.setCellFormula("AVERAGE(D2:D" + Integer.toString(rownum - 1) + ")");
+		row = sheet.createRow(rownum++);
+		row = sheet.createRow(rownum++);
+		int busBegins = rownum + 1;
 		Cell cell4 = row.createCell(1);
 		cell4.setCellValue("Distance Travelled");
 		
@@ -329,6 +341,12 @@ public class BusCentralDatabase {
 				}
 			}
 		}
+
+		row = sheet.createRow(rownum++);
+		Cell busAverages = row.createCell(0);
+		Cell bA = row.createCell(1);
+		busAverages.setCellValue("Averages");
+		bA.setCellFormula("AVERAGE(B" + Integer.toString(busBegins) + ":B" + Integer.toString(rownum - 1) + ")");
 			
 		try {
 			FileOutputStream out = new FileOutputStream(new File(VogellaMain.outputFile));
