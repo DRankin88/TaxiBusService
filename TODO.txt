@@ -5,3 +5,5 @@ For Thursday:
 4) Add in the currently traveled path to the cost of the path
 Get the excel formulas to be entered into the fields automatically. That would be the best solution to speeding things up.
 In the minRe if the bus has no one on it and no one is assigned then just clear the bus
+
+Test whether the clear route when everyone dropped is working and whether the early drops because of routing is working.

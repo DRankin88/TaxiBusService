@@ -55,6 +55,16 @@ public class NoReroutingAllowed {
 		// Pick up passenger if bus is at destination
 		pickupPassengers();
 
+		// If the bus has no one on it and no one assigned then just clear the route
+		for (Bus bus : BusCentralDatabase.getBusesInTheWorld()){
+			
+			if (bus.getAssignedPassengers().isEmpty() && bus.getPassengersOnBus().isEmpty()){
+				
+				bus.setPath(new LinkedList<Vertex>());
+				
+			}
+			
+		}
 		// Tell all the buses to move along their routes to the next location
 		incrimentBuses();
 

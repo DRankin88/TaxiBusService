@@ -139,17 +139,10 @@ public class Bus {
 
 	}
 
-	// DEPRACATED
-	public void pickupPassenger(Passenger passenger){
-
-		passengersOnBus.add(passenger);
-
-	}
-	
 	public String toString(){
-		
+
 		return name;
-		
+
 	}
 
 	public void dropOffPassengers(){
@@ -170,7 +163,7 @@ public class Bus {
 
 		passengersOnBus.removeAll(dropOffs);
 		BusCentralDatabase.removePassengersFromTheWorld(dropOffs);
-		
+
 	}
 
 	public void pickupPassengers(int time){
@@ -242,12 +235,12 @@ public class Bus {
 	public void moveAlongPath(){
 
 		if (!path.isEmpty()){
-			
+
 			distanceTravelled++;
-//			System.out.println("distance travelled " + name + " " + distanceTravelled);
-			
+			//			System.out.println("distance travelled " + name + " " + distanceTravelled);
+
 		}
-		
+
 		if (costToNextStop != 0){
 			// We must be traversing an edge between stops
 
