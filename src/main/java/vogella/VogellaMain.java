@@ -8,6 +8,7 @@ import utilities.Parser;
 import algorithms.DynamicReroutingCostMinimization;
 import algorithms.MinimalRerouting;
 import algorithms.NoReroutingAllowed;
+import controller.BusCentralDatabase;
 import controller.TimeStepper;
 import database.AllPairsShortestPath;
 
@@ -30,16 +31,17 @@ public class VogellaMain {
 		InputParser scenario = new InputParser("./src/main/resources/" + inputStringArray[1] + ".txt");
 		TimeStepper timeStepper = new TimeStepper(busGraph,scenario, allPairsShortestPath);
 
-		outputFile = "L:/SimulationOutput/" + inputStringArray[2] + ".xls";
+		outputFile = "L:/SimulationOutput/FINAL/" + inputStringArray[2] + ".xls";
 
 		DynamicReroutingCostMinimization dynAlgo = new DynamicReroutingCostMinimization();
 		NoReroutingAllowed noReAlgo = new NoReroutingAllowed();
 		MinimalRerouting minReAlgo = new MinimalRerouting();
+		BusCentralDatabase.setGraph(busGraph);
 
 		while (true){
-			//	noReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
+//				noReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
 				dynAlgo.doAlgorithm(busGraph, allPairsShortestPath);
-			//  minReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
+//		  	    minReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
 			//	AssignClosestBus.doAlgorithm();
 		}
 	}

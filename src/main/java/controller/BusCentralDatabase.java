@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -12,9 +13,12 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 
 import passengers.Passenger;
+import vogella.Edge;
+import vogella.Graph;
 import vogella.Vertex;
 import vogella.VogellaMain;
 import buses.Bus;
+import database.AllPairsShortestPath;
 
 /**
  * Models a controller back at HQ that holds information about the world as we move through time.
@@ -35,10 +39,14 @@ public class BusCentralDatabase {
 	private static int timeToComplete;
 	private static HashMap<Passenger, Object[]> passengerStats = new HashMap<Passenger, Object[]>();
 	private static HashMap<Bus, Object[]> busStats = new HashMap<Bus, Object[]>();
-
+	private static Graph globalGraph;
 
 	public static int getTimeToComplete() {
 		return timeToComplete;
+	}
+	
+	public static void setGraph(Graph busGraph){
+		globalGraph = busGraph;
 	}
 
 	public static void setTimeToComplete(int timeToComplete) {
@@ -291,12 +299,15 @@ public class BusCentralDatabase {
 		cell2.setCellValue("Time waiting for pickup");
 		Cell cell3 = row.createCell(3);
 		cell3.setCellValue("Time on Bus");
+		Cell cell4 = row.createCell(4);
+		cell4.setCellValue("Direct Time minus Time on Bus");
 		int rownum = 1;
 		for (Passenger passenger : keyset){
 
 			row = sheet.createRow(rownum++);
 			Object[] objArr = passengerStats.get(passenger);
 			int cellnum = 0;
+			
 			for (Object obj : objArr){
 				Cell cell = row.createCell(cellnum++);
 				if(obj instanceof Integer){
@@ -306,6 +317,9 @@ public class BusCentralDatabase {
 					cell.setCellValue((String)obj);
 				}
 			}
+			Cell cell = row.createCell(cellnum++);
+			int cost = (Integer)objArr[3];
+			cell.setCellValue((cost - (sizeOfPath(AllPairsShortestPath.getPath(passenger.getStartingStop().toString(), passenger.getDestinationStop().toString())))));
 		}
 		
 		row = sheet.createRow(rownum++);
@@ -321,8 +335,8 @@ public class BusCentralDatabase {
 		row = sheet.createRow(rownum++);
 		row = sheet.createRow(rownum++);
 		int busBegins = rownum + 1;
-		Cell cell4 = row.createCell(1);
-		cell4.setCellValue("Distance Travelled");
+		Cell cell5 = row.createCell(1);
+		cell5.setCellValue("Distance Travelled");
 		
 		Set<Bus> busset = busStats.keySet();
 		
@@ -359,6 +373,23 @@ public class BusCentralDatabase {
 		}
 
 	}
+	
+	private static int sizeOfPath (LinkedList<Vertex> path){
+
+		int numberOfEdges = path.size() - 1;
+		int cost = 0;
+
+		for (int i = 0; i < numberOfEdges; i++){
+
+			Edge edge = globalGraph.getEdgeBetweenVertices(path.get(i), path.get(i+1));
+			cost += edge.getWeight();
+
+		}
+
+		return cost;
+
+	}
+
 
 	public static void printStateOfWorld(){
 

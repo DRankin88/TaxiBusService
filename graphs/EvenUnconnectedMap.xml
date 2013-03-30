@@ -25,30 +25,6 @@
 		<name>F</name>
 	</vertex>
 	<edge>
-		<id>0</id>
-		<source>0</source>
-		<destination>1</destination>
-		<weight>2</weight>
-	</edge>
-	<edge>
-		<id>1</id>
-		<source>1</source>
-		<destination>0</destination>
-		<weight>2</weight>
-	</edge>
-	<edge>
-		<id>4</id>
-		<source>2</source>
-		<destination>3</destination>
-		<weight>2</weight>
-	</edge>
-	<edge>
-		<id>5</id>
-		<source>3</source>
-		<destination>2</destination>
-		<weight>2</weight>
-	</edge>
-	<edge>
 		<id>6</id>
 		<source>3</source>
 		<destination>4</destination>

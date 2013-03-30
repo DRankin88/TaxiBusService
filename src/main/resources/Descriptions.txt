@@ -3,3 +3,5 @@ SCENARIO Descriptions:
 1 == constant high load : This scenario has one passenger every timestep, evenly distributed throughtout the stops, 3 buses to deal with the load.
 
 2 == constant high load : This scenario has one passenger every timestep, evenly distributed throughtout the stops, 9 buses to deal with the load.
+
+3 == constant high load : This scenario has one passenger every timestep, evenly distributed throughtout the stops, 5 buses to deal with the load.

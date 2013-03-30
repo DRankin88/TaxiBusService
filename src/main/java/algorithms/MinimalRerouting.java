@@ -157,7 +157,7 @@ public class MinimalRerouting extends BaseAlgorithmBehaviour {
 						LinkedList<Vertex> newPath = (LinkedList<Vertex>) path.clone();
 
 						LinkedList<Vertex> pathToDrop =  (LinkedList<Vertex>) (allPairsShortestPath.getPath(newPath.get(k).getName(), passenger.getDestinationStop().getName())).clone();
-						//risky
+						
 						newPath.addAll(k+1, pathToDrop);
 
 						// Delete duplicates
@@ -192,7 +192,6 @@ public class MinimalRerouting extends BaseAlgorithmBehaviour {
 					}
 
 					LinkedList<Vertex> shortestPathFromThisStart = shortestPath(potentialFromThisPickup);
-
 					candidatePaths.add(shortestPathFromThisStart);
 
 				}
