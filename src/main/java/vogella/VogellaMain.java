@@ -39,8 +39,8 @@ public class VogellaMain {
 		BusCentralDatabase.setGraph(busGraph);
 
 		while (true){
-//				noReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
-				dynAlgo.doAlgorithm(busGraph, allPairsShortestPath);
+				noReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
+//				dynAlgo.doAlgorithm(busGraph, allPairsShortestPath);
 //		  	    minReAlgo.doAlgorithm(busGraph, allPairsShortestPath);
 			//	AssignClosestBus.doAlgorithm();
 		}

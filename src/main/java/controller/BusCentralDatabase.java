@@ -301,6 +301,8 @@ public class BusCentralDatabase {
 		cell3.setCellValue("Time on Bus");
 		Cell cell4 = row.createCell(4);
 		cell4.setCellValue("Direct Time minus Time on Bus");
+		Cell cellideal = row.createCell(5);
+		cellideal.setCellValue("Direct Time minus Time in System");
 		int rownum = 1;
 		for (Passenger passenger : keyset){
 
@@ -320,6 +322,9 @@ public class BusCentralDatabase {
 			Cell cell = row.createCell(cellnum++);
 			int cost = (Integer)objArr[3];
 			cell.setCellValue((cost - (sizeOfPath(AllPairsShortestPath.getPath(passenger.getStartingStop().toString(), passenger.getDestinationStop().toString())))));
+			Cell cellagain = row.createCell(cellnum++);
+			int costagain = (Integer)objArr[1];
+			cellagain.setCellValue((costagain - (sizeOfPath(AllPairsShortestPath.getPath(passenger.getStartingStop().toString(), passenger.getDestinationStop().toString())))));
 		}
 		
 		row = sheet.createRow(rownum++);
